@@ -33,6 +33,9 @@ fillNeighborhoodsHTML = (neighborhoods = self.neighborhoods) => {
   const select = document.getElementById('neighborhoods-select');
   neighborhoods.forEach(neighborhood => {
     const option = document.createElement('option');
+    // Add Aria attribute for screen reader
+    option.setAttribute('role', 'option');
+    option.setAttribute('id', 'nng-impl-' + neighborhood);
     option.innerHTML = neighborhood;
     option.value = neighborhood;
     select.append(option);
@@ -61,6 +64,9 @@ fillCuisinesHTML = (cuisines = self.cuisines) => {
 
   cuisines.forEach(cuisine => {
     const option = document.createElement('option');
+    // Add Aria attribute for screen reader
+    option.setAttribute('role', 'option');
+    option.setAttribute('id', 'cc-impl-' +cuisine);
     option.innerHTML = cuisine;
     option.value = cuisine;
     select.append(option);
@@ -95,6 +101,28 @@ updateRestaurants = () => {
 
   const cuisine = cSelect[cIndex].value;
   const neighborhood = nSelect[nIndex].value;
+  
+  // Reset all the class
+  for (var cc of cSelect) {
+    cc.setAttribute('class', '');
+  }
+
+  for (var cc of nSelect) {
+    cc.setAttribute('class', '');
+  }
+  // Update aria attribute for selected option
+  if (cIndex > 0) {
+    // Get the selector
+    let cSelector = document.querySelector('#cuisines-select');
+    cSelector.setAttribute('aria-activedecendant', cSelect[cIndex].id);
+    cSelect[cIndex].setAttribute('class', 'focuesd');
+  }
+  if (nIndex > 0) {
+    // Get the selector
+    let nSelector = document.querySelector('#neighborhoods-select');
+    nSelector.setAttribute('aria-activedecendant', nSelect[nIndex].id);
+    nSelect[nIndex].setAttribute('class', 'focused');
+  }
 
   DBHelper.fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood, (error, restaurants) => {
     if (error) { // Got an error!
@@ -137,6 +165,10 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
  */
 createRestaurantHTML = (restaurant) => {
   const li = document.createElement('li');
+  li.setAttribute('role', 'option');
+  li.setAttribute('tabIndex', '0');
+  li.setAttribute('class', 'restaurant-col');
+  li.setAttribute('id', 'rr-impl-' + restaurant.name);
 
   const image = document.createElement('img');
   image.className = 'restaurant-img';
@@ -156,6 +188,10 @@ createRestaurantHTML = (restaurant) => {
   li.append(address);
 
   const more = document.createElement('a');
+  more.setAttribute('role', 'link');
+  more.setAttribute('aria-label', restaurant.name);
+  more.setAttribute('aria-describedby', 'rr-impl-' + restaurant.name);
+
   more.innerHTML = 'View Details';
   more.href = DBHelper.urlForRestaurant(restaurant);
   li.append(more)
@@ -175,4 +211,8 @@ addMarkersToMap = (restaurants = self.restaurants) => {
     });
     self.markers.push(marker);
   });
+}
+
+updateFocus = () => {
+  alert('focus');
 }

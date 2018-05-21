@@ -52,18 +52,21 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
 nav {
   width: 100%;
   height: 80px;
-  background-color: #252831;
+  background-color:#252831;
   text-align:center;
+  display: inline-block;
 }
 nav h1 {
   margin: auto;
+  padding: 25px;
 }
 nav h1 a {
   color: #fff;
-  font-size: 14pt;
+  font-size: 14pt; /* 1.2 rem */
   font-weight: 200;
   letter-spacing: 10px;
   text-transform: uppercase;
+  line-height: 1.8 rem;
 }
 #breadcrumb {
     padding: 10px 40px 16px;
@@ -109,6 +112,7 @@ nav h1 a {
   height: 50px;
   background-color: #3397DB;
   align-items: center;
+  display: flex;
 }
 .filter-options h2 {
   color: white;
@@ -272,4 +276,33 @@ nav h1 a {
 }
 #restaurant-hours td {
   color: #666;
+}
+
+/* Part 1 css */
+.restaurant-review:hover, .restaurant-review:focus {
+  color: red;
+} 
+
+.restaurants-grid {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.restaurant-col {
+  width: 100%;
+}
+
+/* accessibility */
+.visuallyhidden {
+  visibility: hidden;
+  Position: absolute;  
+  Top: -9999px;
+  Left: -9999px;
+}
+
+/* media queries */
+@media screen and (max-width: 452px) {
+  nav h1 {
+    padding: 10px;
+  }
 }
