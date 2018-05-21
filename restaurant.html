@@ -14,11 +14,11 @@
   <header>
     <!-- Beginning nav -->
     <nav>
-      <h1><a href="/">Restaurant Reviews</a></h1>
+      <h1><a class="restaurant-review" href="/">Restaurant Reviews</a></h1>
     </nav>
     <!-- Beginning breadcrumb -->
-    <ul id="breadcrumb" >
-      <li><a href="/">Home</a></li>
+    <ul id="breadcrumb" role="listbox" aria-labelledby="rr-detail">
+      <li><a class="restaurant-home" role="option" href="/">Home</a></li>
     </ul>
     <!-- End breadcrumb -->
     <!-- End nav -->
@@ -26,24 +26,24 @@
   <!-- End header -->
 
   <!-- Beginning main -->
-  <main id="maincontent">
+  <main id="maincontent" class="restaurant-map">
     <!-- Beginning map -->
-    <section id="map-container">
+    <section id="map-container" class="restaurant-map-container">
       <div id="map"></div>
     </section>
     <!-- End map -->
     <!-- Beginning restaurant -->
-    <section id="restaurant-container">
+    <section id="restaurant-container" class="restaurant-map-container-container" tabindex="0">
       <h1 id="restaurant-name"></h1>
-      <img id="restaurant-img">
+      <img id="restaurant-img" alt="restaurant image">
       <p id="restaurant-cuisine"></p>
       <p id="restaurant-address"></p>
-      <table id="restaurant-hours"></table>
+      <table id="restaurant-hours" role="table"></table>
     </section>
     <!-- end restaurant -->
     <!-- Beginning reviews -->
-    <section id="reviews-container">
-      <ul id="reviews-list"></ul>
+    <section id="reviews-container" class="map-reviews-container">
+      <ul id="reviews-list" role="list" aria-labelledby="reviews-container" tabindex="0"></ul>
     </section>
     <!-- End reviews -->
   </main>

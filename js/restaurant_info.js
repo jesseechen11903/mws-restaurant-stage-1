@@ -117,6 +117,8 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
  */
 createReviewHTML = (review) => {
   const li = document.createElement('li');
+  li.setAttribute('role', 'listitem');
+  li.setAttribute('tabindex', '0');
   const name = document.createElement('p');
   name.innerHTML = review.name;
   li.appendChild(name);
@@ -142,6 +144,7 @@ createReviewHTML = (review) => {
 fillBreadcrumb = (restaurant=self.restaurant) => {
   const breadcrumb = document.getElementById('breadcrumb');
   const li = document.createElement('li');
+  li.setAttribute('class', 'restaurant-selected');
   li.innerHTML = restaurant.name;
   breadcrumb.appendChild(li);
 }
