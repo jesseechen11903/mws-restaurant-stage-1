@@ -190,14 +190,19 @@ nav h1 a {
 
 /* ====================== Restaurant Details ====================== */
 .inside {
-  display: inline-grid;
+  display: grid;
   grid-template-rows: auto auto auto;
+  grid-auto-flow: row;
 }
 .inside #maincontent {
     background-color: #f3f3f3;
-    display: inline-flex;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-auto-flow: column;
+    /* display: inline-flex;
     flex-direction: column;
-    flex-flow: row;
+    flex-flow: row; */
     min-height: 100%;
 }
 
@@ -209,7 +214,7 @@ nav h1 a {
 
 .inside #map-container {
   background: blue none repeat scroll 0 0;
-  height: 50%;
+  /* height: 50%; */
   /* position: fixed;
   right: 0;
   top: 80px; */
@@ -296,12 +301,12 @@ nav h1 a {
   color: #666;
 }
 
-/* .restaurant-reviews-container {
+.restaurant-reviews-container {
   display: flex;
 }
 .restaurant-reviews-container>* {
   flex: 1 1 200px;
-} */
+}
 
 table { 
   table-layout:fixed;
@@ -345,7 +350,23 @@ td {
 
 @media screen and (min-width: 0) and (max-width: 900px) {
   .inside #maincontent {
-    flex-flow: row wrap;
+    display: grid;
+
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+    /* grid-auto-flow: row; */
+    
+    /* display: inline-flex;
+    flex-direction: row;
+    flex-flow: row; */
+
   }
-  
+
+  /* show the reviews in stack */
+  .restaurant-reviews-container {
+    display: inline-flex;
+    flex-direction: row;
+    flex-flow: column;
+    flex-wrap: wrap;
+  }
 }
