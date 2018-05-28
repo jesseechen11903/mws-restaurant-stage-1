@@ -1,4 +1,17 @@
 const staticCacheName = 'restaurant-review-v1';
+const imageCache = 'restaurant-image-v1';
+const mapCache = 'restaurant-map-v1';
+const staticMapCache = 'restaurant-static-map-v1';
+const googleMapCache = 'restaurant-google-v1';
+
+const allCaches = [
+    staticCacheName,
+    imageCache,
+    mapCache,
+    staticMapCache,
+    googleMapCache
+  ];
+
 let urlsToCache = [
     '/',
     '/css/styles.css',
@@ -6,7 +19,7 @@ let urlsToCache = [
     '/data/restaurants.json',
     '/js/dbhelper.js',
     '/js/restaurant_info.js'
-    
+    /* '/restaurant.html', */
     // 'https://maps.googleapis.com/maps/api/js?key=AIzaSyAKySykca3gfvxzp8WEFSPt1p6Uu_tnn-Y&libraries=places&callback=initMap'
 ];
 
@@ -23,20 +36,68 @@ self.addEventListener('activate', event => {
     // delete any caches that is not in our cahce
     event.waitUntil(
         caches.keys().then(keys => Promise.all(
-            keys.map(key => {
-                if (!staticCacheName.includes(key)) {
-                    return caches.delete(key);
-                }
+            keys.filter(cacheName => {
+                return cacheName.startsWith('restaurant-') &&
+                    !allCaches.includes(cacheName);
+            })
+            .map(key => {
+                return caches.delete(key);
             })
         )).then(() => {
             console.log('Cache now ready to handle fetches!');
+            // let's handle the initial data.json load and cache the image
         })
     );
 });
 
+function serveImage(request, mycache, pattern) {
+    // let storageUrl = request.url.replace(/-\d+px\.jpg$/, '');
+    let storageUrl = request.url.replace(/-\d+px\.jpg$/, '');
+    let storageCache = mycache;
+    
+    return caches.open(storageCache).then(cache =>
+    {
+            return cache.match(storageUrl).then(response => {
+                if (response) return response;
+  
+                return fetch(request).then(networkResponse => {
+                    cache.put(storageUrl, networkResponse.clone());
+                    return networkResponse;
+                });
+            });
+    });
+}
+
+
 self.addEventListener('fetch', event => {
     const url = new URL(event.request.url);
 
+    console.log('url ' + url);
+    if (url.pathname.startsWith('/img/')) {
+        event.respondWith(serveImage(event.request, imageCache, 'img'));
+        return;
+    }
+
+    // const regex = /(https?:\/\/(.+?\.)?googleapis\.com(\/[A-Za-z0-9\-\._~:\/\?#\[\]@!$&'\(\)\*\+,;\=]*)?)/;
+
+    let testUrl = 'googleapis.com';
+    
+    if (url.href.indexOf(testUrl) != -1) {
+        event.respondWith(serveImage(event.request, mapCache, 'map'));
+        return;
+    }
+    let staticUrl = 'maps.gstatic.com';
+    if (url.href.indexOf(staticUrl) != -1) {
+        event.respondWith(serveImage(event.request, staticMapCache, 'staticMap'));
+        return;
+    }
+
+    if (event.request.url.indexOf('https://maps.googleapi.com/js') == 0) {
+        event.respondWith(
+          // Handle Maps API requests in a generic fashion,
+          // by returning a Promise that resolves to a Response.
+        );
+      }
     event.respondWith(
         caches.match(event.request).then(response => {
             console.log('fetching');
