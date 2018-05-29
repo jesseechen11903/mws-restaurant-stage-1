@@ -18,8 +18,8 @@ let urlsToCache = [
     '/js/main.js',
     '/data/restaurants.json',
     '/js/dbhelper.js',
-    '/js/restaurant_info.js'
-    /* '/restaurant.html', */
+    '/js/restaurant_info.js',
+    '/restaurant.html'
     // 'https://maps.googleapis.com/maps/api/js?key=AIzaSyAKySykca3gfvxzp8WEFSPt1p6Uu_tnn-Y&libraries=places&callback=initMap'
 ];
 
@@ -28,7 +28,12 @@ self.addEventListener('install', event => {
 
     // cache the css style
     event.waitUntil(
-        caches.open(staticCacheName).then(cache => cache.addAll(urlsToCache))
+        caches.open(staticCacheName)
+            .then(cache => cache.addAll(urlsToCache))
+            .then(() => {
+                console.log('ServiceWorker Installed. All core components have been cached.');
+                return self.skipWaiting();
+            })
     );
 });
 
@@ -46,14 +51,15 @@ self.addEventListener('activate', event => {
         )).then(() => {
             console.log('Cache now ready to handle fetches!');
             // let's handle the initial data.json load and cache the image
+        }).catch(() => {
+            console.log('Error in activate');
         })
     );
 });
 
-function serveImage(request, mycache, pattern) {
+function serveImage(request, storageCache) {
     // let storageUrl = request.url.replace(/-\d+px\.jpg$/, '');
     let storageUrl = request.url.replace(/-\d+px\.jpg$/, '');
-    let storageCache = mycache;
     
     return caches.open(storageCache).then(cache =>
     {
@@ -63,7 +69,13 @@ function serveImage(request, mycache, pattern) {
                 return fetch(request).then(networkResponse => {
                     cache.put(storageUrl, networkResponse.clone());
                     return networkResponse;
-                });
+                })
+                .catch(() => {
+                    console.log('fetching error in serveImage');
+                })
+            })
+            .catch(() => {
+                console.log('match error');
             });
     });
 }
@@ -74,7 +86,7 @@ self.addEventListener('fetch', event => {
 
     console.log('url ' + url);
     if (url.pathname.startsWith('/img/')) {
-        event.respondWith(serveImage(event.request, imageCache, 'img'));
+        event.respondWith(serveImage(event.request, imageCache));
         return;
     }
 
@@ -83,12 +95,12 @@ self.addEventListener('fetch', event => {
     let testUrl = 'googleapis.com';
     
     if (url.href.indexOf(testUrl) != -1) {
-        event.respondWith(serveImage(event.request, mapCache, 'map'));
+        event.respondWith(serveImage(event.request, mapCache));
         return;
     }
-    let staticUrl = 'maps.gstatic.com';
+    let staticUrl = 'gstatic.com';
     if (url.href.indexOf(staticUrl) != -1) {
-        event.respondWith(serveImage(event.request, staticMapCache, 'staticMap'));
+        event.respondWith(serveImage(event.request, staticMapCache));
         return;
     }
 
@@ -106,6 +118,9 @@ self.addEventListener('fetch', event => {
                     cache.put(event.request, resp.clone());
                     return resp;
                 });
+            })
+            .catch(() => {
+                console.log('error in fetching');
             });
         })
     );
