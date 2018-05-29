@@ -203,7 +203,7 @@ nav h1 a {
     /* display: inline-flex;
     flex-direction: column;
     flex-flow: row; */
-    min-height: 100%;
+    /* min-height: 100%; */
 }
 
 .inside header {
