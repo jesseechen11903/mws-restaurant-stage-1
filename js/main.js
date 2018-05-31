@@ -186,11 +186,20 @@ createRestaurantHTML = (restaurant) => {
   li.setAttribute('class', 'restaurant-col');
   li.setAttribute('id', 'rr-impl-' + restaurant.name);
 
+  let image_src = DBHelper.imageUrlForRestaurant(restaurant);
+  const responsive_image = document.createElement('a');
+  responsive_image.setAttribute('href', image_src);
+  responsive_image.setAttribute('class', 'progressive replace');
+
   const image = document.createElement('img');
   image.className = 'restaurant-img';
-  image.src = DBHelper.imageUrlForRestaurant(restaurant);
+  image.src = image_src.substring(0, image_src.lastIndexOf('.')) + '-80_preview' + image_src.substring(image_src.lastIndexOf('.'));
+  // image.src = image_src + '_preview';
   image.setAttribute('alt', restaurant.name);
-  li.append(image);
+  image.setAttribute('class', 'preview');
+  responsive_image.appendChild(image);
+  
+  li.append(responsive_image);
 
   const name = document.createElement('h1');
   name.innerHTML = restaurant.name;
