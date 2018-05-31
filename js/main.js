@@ -216,6 +216,7 @@ createRestaurantHTML = (restaurant) => {
   const more = document.createElement('a');
   more.setAttribute('role', 'link');
   more.setAttribute('aria-label', restaurant.name);
+  more.setAttribute('class', 'review-detail');
   // more.setAttribute('aria-describedby', 'rr-impl-' + restaurant.name);
 
   more.innerHTML = 'View Details';
