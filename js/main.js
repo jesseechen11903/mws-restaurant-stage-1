@@ -2,9 +2,9 @@ import DBHelper from './dbhelper.js';
 
 let restaurants,
   neighborhoods,
-  cuisines
-var map
-var markers = []
+  cuisines;
+var map;
+var markers = [];
 
 
 /**
@@ -15,6 +15,7 @@ export const fetchNeighborhoods = () => {
     if (error) { // Got an error
       console.error(error);
     } else {
+
       self.neighborhoods = neighborhoods;
       fillNeighborhoodsHTML();
     }
@@ -71,7 +72,8 @@ export const fillCuisinesHTML = (cuisines = self.cuisines) => {
 /**
  * Update page and map for current restaurants.
  */
-export const updateRestaurants = () => {
+export const updateRestaurants = (gmap) => {
+  map = gmap;
   const cSelect = document.getElementById('cuisines-select');
   const nSelect = document.getElementById('neighborhoods-select');
 
@@ -117,13 +119,16 @@ export const updateRestaurants = () => {
  * Clear current restaurants, their HTML and remove their map markers.
  */
 export const resetRestaurants = (restaurants) => {
+  self = map;
   // Remove all restaurants
   self.restaurants = [];
   const ul = document.getElementById('restaurants-list');
   ul.innerHTML = '';
 
   // Remove all map markers
-  self.markers.forEach(m => m.setMap(null));
+  if (self.markers) {
+    self.markers.forEach(m => m.setMap(null));
+  }
   self.markers = [];
   self.restaurants = restaurants;
 }
@@ -194,7 +199,8 @@ export const createRestaurantHTML = (restaurant) => {
 /**
  * Add markers for current restaurants to the map.
  */
-export const addMarkersToMap = (restaurants = self.restaurants) => {
+export const addMarkersToMap = (restaurants = map.restaurants) => {
+  self = map;
   restaurants.forEach(restaurant => {
     // Add marker to the map
     const marker = DBHelper.mapMarkerForRestaurant(restaurant, self.map);

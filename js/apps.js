@@ -23,5 +23,5 @@ window.initMap = () => {
         center: loc,
         scrollwheel: false
     });
-    updateRestaurants();
+    updateRestaurants(self);
 }

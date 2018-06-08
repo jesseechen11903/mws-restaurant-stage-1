@@ -39,11 +39,11 @@
       <div class="filter-options">
         <h2>Filter Results</h2>
         <span id="nng-impl" aria-haspopup="listbox" aria-labelledby="nng-impl" class="visuallyhidden">Choose your neighborhoods?</span>
-        <select role="listbox" aria-labelledby="nng-impl" id="neighborhoods-select" name="neighborhoods" onchange="updateRestaurants()">
+        <select role="listbox" aria-labelledby="nng-impl" id="neighborhoods-select" name="neighborhoods" onchange="updateRestaurants(window)">
           <option id="nng-impl-all" value="all">All Neighborhoods</option>
         </select>
         <span id="cc-impl" class="visuallyhidden">Choose your cuisines?</span>
-        <select id="cuisines-select" role="listbox" tabindex="0" aria-labelledby="cc-impl" name="cuisines" onchange="updateRestaurants()">
+        <select id="cuisines-select" role="listbox" tabindex="0" aria-labelledby="cc-impl" name="cuisines" onchange="updateRestaurants(window)">
           <option id="cc-impl-all" value="all">All Cuisines</option>
         </select>
       </div>
