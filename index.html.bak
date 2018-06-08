@@ -52,7 +52,9 @@
     </section>
   </main>
 
-  <script type="application/javascript" charset="utf-8" src="dist/apps.js"></script>
+  <script type="application/javascript" charset="utf-8" src="js/dbhelper.js"></script>
+  <script type="application/javascript" charset="utf-8" src="js/main.js"></script>
+   <!-- script type="application/javascript" charset="utf-8" src="dist/main.js" --><!-- /script -->
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOaMGAYfc-rORJ1aaAAVSWG1zjQxF28j8&libraries=places&callback=initMap"></script>
 
 
