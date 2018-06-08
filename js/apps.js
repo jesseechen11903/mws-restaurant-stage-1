@@ -1,4 +1,5 @@
 import { updateRestaurants, fetchNeighborhoods, fetchCuisines } from './main.js';
+import '../css/styles.css';
 
 window.updateRestaurants = updateRestaurants;
 /**

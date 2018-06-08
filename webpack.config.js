@@ -1,5 +1,6 @@
 // Inside of webpack.config.js:
 const WorkboxPlugin = require('workbox-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
 	entry: {
@@ -30,10 +31,21 @@ module.exports = {
 				use: {
 					loader: "babel-loader"
 				}
+			},
+			{
+				test: /\.css$/,
+				exclude: /css\/progressive-image.min.css/,
+				use: ExtractTextPlugin.extract(
+					{
+						fallback: 'style-loader',
+						use: [ { loader: 'css-loader', options:{ minimize: true} }]
+					}
+				)
 			}
     ]
-	}  //,
-	// plugins: [
-	// 	new WorkboxPlugin.GenerateSW()
-	// ]
+	},
+	plugins: [
+		// new WorkboxPlugin.GenerateSW()
+		new ExtractTextPlugin({filename: 'style.css'})
+	]
 };
