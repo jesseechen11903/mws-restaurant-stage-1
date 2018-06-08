@@ -33,6 +33,9 @@ self.addEventListener('install', event => {
                 console.log('ServiceWorker Installed. All core components have been cached.');
                 return self.skipWaiting();
             })
+            .catch((err) => {
+                console.log('Error in install ' + err.message);
+            })
     );
 });
 
