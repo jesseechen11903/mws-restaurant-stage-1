@@ -21,9 +21,41 @@ module.exports = function(grunt) {
             suffix: ,
             quality:
             */
-           width: 80,
-           suffix: '_preview',
+	   width: 270,
            quality: 30
+          },
+	  {
+           name: "lg",
+   	   suffix: "_2x",
+	   width: 800,
+	   quality: 60
+          },
+	  {
+           name: "lg",
+	   width: 400,
+	   quality: 60
+          },
+	  {
+           name: "sm",
+   	   suffix: "_2x",
+	   width: 400,
+           quality: 60
+          },
+	  {
+           name: "sm",
+	   width: 200,
+           quality: 60
+          },
+          {
+           name: "md",
+   	   suffix: "_2x",
+	   width: 600,
+	   quality: 60
+          },
+          {
+           name: "md",
+	   width: 300,
+	   quality: 60
           }]
         },
 
