@@ -28,6 +28,15 @@ export const fetchRestaurantFromURL = (callback) => {
   }
 }
 
+export const getImageSource = (source, targetwidth) => {
+  let src = source;
+
+  if (source && targetwidth) {
+    src = source.substring(0, source.lastIndexOf('.')) + '-' + targetwidth + source.substring(source.lastIndexOf('.'));
+  }
+  return src;
+}
+
 /**
  * Create restaurant HTML and add it to the webpage
  */
@@ -39,9 +48,21 @@ export const fillRestaurantHTML = (restaurant = self.restaurant) => {
   address.innerHTML = restaurant.address;
 
   const image = document.getElementById('restaurant-img');
-  image.className = 'restaurant-img'
-  image.src = DBHelper.imageUrlForRestaurant(restaurant);
+  image.className = 'restaurant-img';
+  let imagename = DBHelper.imageUrlForRestaurant(restaurant);
+  let sourceSet = getImageSource(imagename, 'sm') + ' 400w,' + getImageSource(imagename, 'md') + ' 600w,' + getImageSource(imagename, 'lg') + ' 1440w';
+  image.setAttribute('srcset', sourceSet);
+  image.src = getImageSource(imagename, 'lg');
   image.setAttribute('alt', restaurant.name);
+
+  const picture =document.getElementById('restaurant-pic');
+  const sourceElement = picture.getElementsByTagName('source');
+  // 900 breakpoint, lg
+  sourceElement[0].setAttribute('srcset', getImageSource(imagename, 'lg') + ' 1x,' + getImageSource(imagename,'lg_2x') + ' 2x');
+  // 600 breakpoint, sm
+  sourceElement[1].setAttribute('srcset', getImageSource(imagename, 'sm')+ ' 1x,' + getImageSource(imagename,'sm_2x') + ' 2x');
+  // 601 breakpoint, md
+  sourceElement[2].setAttribute('srcset', getImageSource(imagename, 'md')+ ' 1x,' + getImageSource(imagename,'md_2x') + ' 2x');
 
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;

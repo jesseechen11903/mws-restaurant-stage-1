@@ -21,10 +21,16 @@ module.exports = function(grunt) {
             suffix: ,
             quality:
             */
-           width: 80,
+           width: 270,
            suffix: '_preview',
            quality: 30
-          }]
+          },
+          {
+            width: 800,
+            suffix: '',
+            quality: 80
+          }
+        ]
         },
 
         /*

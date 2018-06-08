@@ -14,13 +14,12 @@ const allCaches = [
 
 let urlsToCache = [
     '/',
-    '/css/styles.css',
-    '/js/main.js',
+    '/dist/styles.css',
+    '/dist/main.js',
     '/data/restaurants.json',
-    '/js/dbhelper.js',
-    '/js/restaurant_info.js',
+    '/dist/dbhelper.js',
+    '/dist/restaurant_info.js',
     '/restaurant.html'
-    // 'https://maps.googleapis.com/maps/api/js?key=AIzaSyAKySykca3gfvxzp8WEFSPt1p6Uu_tnn-Y&libraries=places&callback=initMap'
 ];
 
 self.addEventListener('install', event => {

@@ -156,13 +156,13 @@ export const createRestaurantHTML = (restaurant) => {
 
   let image_src = DBHelper.imageUrlForRestaurant(restaurant);
   const responsive_image = document.createElement('a');
-  responsive_image.setAttribute('href', image_src);
+  let full_image = image_src.substring(0, image_src.lastIndexOf('.')) + '-lg' + image_src.substring(image_src.lastIndexOf('.'));
+  responsive_image.setAttribute('href', full_image);
   responsive_image.setAttribute('class', 'progressive replace');
 
   const image = document.createElement('img');
   image.className = 'restaurant-img';
-  image.src = image_src.substring(0, image_src.lastIndexOf('.')) + '-80_preview' + image_src.substring(image_src.lastIndexOf('.'));
-  // image.src = image_src + '_preview';
+  image.src = image_src.substring(0, image_src.lastIndexOf('.')) + '-270' + image_src.substring(image_src.lastIndexOf('.'));
   image.title = 'image of ' + restaurant.name;
   image.setAttribute('alt', restaurant.name);
   image.setAttribute('class', 'preview');

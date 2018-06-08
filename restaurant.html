@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="css/progressive-image.min.css">
   <script src="js/progressive-image.min.js"></script>
   <title>Restaurant Info</title>
+  <meta http-equiv="Cache-control" content="public">
 </head>
 
 <body class="inside">
@@ -40,7 +41,12 @@
     <div class="restaurant-reviews-container">
       <section id="restaurant-container" tabindex="0">
         <h1 id="restaurant-name"></h1>
-        <img id="restaurant-img" alt="restaurant image" title="image of selected restaurant">
+        <picture id="restaurant-pic">
+          <source media="(min-width: 900px)" srcset="">
+          <source media="(max-width: 600px)" srcset="">
+          <source media="(min-width: 601px)" srcset="">
+          <img id="restaurant-img" alt="restaurant image" title="image of selected restaurant">
+        </picture>
         <p id="restaurant-cuisine"></p>
         <p id="restaurant-address"></p>
         <table id="restaurant-hours" role="table"></table>
