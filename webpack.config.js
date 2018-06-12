@@ -46,6 +46,6 @@ module.exports = {
 	},
 	plugins: [
 		// new WorkboxPlugin.GenerateSW()
-		new ExtractTextPlugin({filename: 'style.css'})
+		new ExtractTextPlugin({filename: 'styles.css'})
 	]
 };
