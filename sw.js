@@ -16,7 +16,6 @@ let urlsToCache = [
     '/',
     '/dist/styles.css',
     '/dist/main.js',
-    '/data/restaurants.json',
     '/dist/dbhelper.js',
     '/dist/restaurant_info.js',
     '/restaurant.html'
