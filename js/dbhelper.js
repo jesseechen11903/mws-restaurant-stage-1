@@ -23,23 +23,22 @@ export default class DBHelper {
   static fetchRestaurantJson(dbPromise) {
     const restaurant_url = DBHelper.DATABASE_URL + '/restaurants';
 
-    console.log(dbPromise);
     fetch(restaurant_url)
-    .then(response => response.json())
-    .then((response) => {
-      console.log(response);
-      dbPromise.then(db => {
-        const tx = db.transaction('reviews', 'readwrite');
-        response.map(data => {
-          tx.objectStore('reviews').put(data);
-        })
-        return tx.complete;
+      .then(response => response.json())
+      .then((response) => {
+        console.log(response);
+        dbPromise.then(db => {
+          const tx = db.transaction('reviews', 'readwrite');
+          response.map(data => {
+            tx.objectStore('reviews').put(data);
+          })
+          return tx.complete;
+        });
+      })
+      .catch((response) => {
+        const error = (`Request failed. Returned status of ${response.status}`);
+        callback(error, null);
       });
-    })
-    .catch((response) => {
-      const error = (`Request failed. Returned status of ${response.status}`);
-      callback(error, null);
-    });
   }
   /*
    * fetch result from website
@@ -48,16 +47,16 @@ export default class DBHelper {
     const restaurant_url = DBHelper.DATABASE_URL + '/restaurants';
 
     fetch(restaurant_url)
-    .then(response => response.json())
-    .then((response) => {
-      console.log(response);
-      // store
-      callback(null, response);
-    })
-    .catch((response) => {
-      const error = (`Request failed. Returned status of ${response.status}`);
-      callback(error, null);
-    });
+      .then(response => response.json())
+      .then((response) => {
+        console.log(response);
+        // store
+        callback(null, response);
+      })
+      .catch((response) => {
+        const error = (`Request failed. Returned status of ${response.status}`);
+        callback(error, null);
+      });
   }
 
   /**
@@ -66,26 +65,14 @@ export default class DBHelper {
    */
   static fetchRestaurants(callback) {
     let dbPromise;
-
-   
-      // .then(db => {
-      //   console.log('Db created');
-
-      // })
-      // .catch(error => {
-      //   console.log('Not able to create db');
-      //   // read DB
-
-      //   console.log('read db');
-      //   db.transaction('reviews')
-      //     .objectStore('reviews').index('name')
-      //     .then(response => {
-      //       console.log(response);
-      //       // callback(null, response);
-      //     });
-      // });
-      DBHelper.readDB();
+    let response = DBHelper.readDB();
+    if (response) {
+      console.log('reading from indexeddb');
+      callback(null, response);
+    } else {
+      console.log('fetch from server');
       DBHelper.fetchJson(callback);
+    }
   }
 
   /**
@@ -261,12 +248,12 @@ export default class DBHelper {
 
   static readDB() {
     DBHelper.openDB()
-    .then(db => {
-      let tx = db.transaction('reviews', 'readonly');
-      let store = tx.objectStore('reviews');
-      return store.getAll();
-    }).then(items => {
-      console.log('read db ' + items);
-    });
+      .then(db => {
+        let tx = db.transaction('reviews', 'readonly');
+        let store = tx.objectStore('reviews');
+        return store.getAll();
+      }).then(items => {
+        console.log('read db ' + items);
+      });
   }
 }
