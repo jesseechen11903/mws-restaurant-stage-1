@@ -1,7 +1,12 @@
 /**
  * Common database helper functions.
  */
+import idb from 'idb';
+
 export default class DBHelper {
+  constructor(db) {
+    this.dbPromise = db;
+  }
 
   /**
    * Database URL.
@@ -12,34 +17,75 @@ export default class DBHelper {
     // return `http://localhost:${port}/data/restaurants.json`;
     return `http://localhost:${port}`;
   }
-
-  /**
-   * Fetch all restaurants.
+  /*
+   * fetch result from website
    */
-  static fetchRestaurants(callback) {
-    // let xhr = new XMLHttpRequest();
-    // xhr.open('GET', DBHelper.DATABASE_URL);
-    // xhr.onload = () => {
-    //   if (xhr.status === 200) { // Got a success response from server!
-    //     const json = JSON.parse(xhr.responseText);
-    //     const restaurants = json.restaurants;
-    //     callback(null, restaurants);
-    //   } else { // Oops!. Got an error from server.
-    //     const error = (`Request failed. Returned status of ${xhr.status}`);
-    //     callback(error, null);
-    //   }
-    // };
-    // xhr.send();
+  static fetchRestaurantJson(dbPromise) {
     const restaurant_url = DBHelper.DATABASE_URL + '/restaurants';
+
+    console.log(dbPromise);
     fetch(restaurant_url)
     .then(response => response.json())
     .then((response) => {
-      callback(null, response);
+      console.log(response);
+      dbPromise.then(db => {
+        const tx = db.transaction('reviews', 'readwrite');
+        response.map(data => {
+          tx.objectStore('reviews').put(data);
+        })
+        return tx.complete;
+      });
     })
-    .catch((response) =>  {
+    .catch((response) => {
       const error = (`Request failed. Returned status of ${response.status}`);
       callback(error, null);
     });
+  }
+  /*
+   * fetch result from website
+   */
+  static fetchJson(callback) {
+    const restaurant_url = DBHelper.DATABASE_URL + '/restaurants';
+
+    fetch(restaurant_url)
+    .then(response => response.json())
+    .then((response) => {
+      console.log(response);
+      // store
+      callback(null, response);
+    })
+    .catch((response) => {
+      const error = (`Request failed. Returned status of ${response.status}`);
+      callback(error, null);
+    });
+  }
+
+  /**
+   * Fetch all restaurants.
+   * this is the main method to read and cache from indexDB
+   */
+  static fetchRestaurants(callback) {
+    let dbPromise;
+
+   
+      // .then(db => {
+      //   console.log('Db created');
+
+      // })
+      // .catch(error => {
+      //   console.log('Not able to create db');
+      //   // read DB
+
+      //   console.log('read db');
+      //   db.transaction('reviews')
+      //     .objectStore('reviews').index('name')
+      //     .then(response => {
+      //       console.log(response);
+      //       // callback(null, response);
+      //     });
+      // });
+      DBHelper.readDB();
+      DBHelper.fetchJson(callback);
   }
 
   /**
@@ -116,6 +162,7 @@ export default class DBHelper {
 
   /**
    * Fetch all neighborhoods with proper error handling.
+   * read from IndexDB if exists else store it
    */
   static fetchNeighborhoods(callback) {
     // Fetch all restaurants
@@ -134,6 +181,7 @@ export default class DBHelper {
 
   /**
    * Fetch all cuisines with proper error handling.
+   * read from IndexDB if exists or else exist
    */
   static fetchCuisines(callback) {
     // Fetch all restaurants
@@ -173,9 +221,52 @@ export default class DBHelper {
       title: restaurant.name,
       url: DBHelper.urlForRestaurant(restaurant),
       map: map,
-      animation: google.maps.Animation.DROP}
+      animation: google.maps.Animation.DROP
+    }
     );
     return marker;
   }
 
+  static openDB() {
+    if (!('indexedDB' in window)) {
+      console.log('This browser does not support IndexedDB');
+      return;
+    }
+    if (!navigator.serviceWorker) {
+      return Promise.resolve();
+    }
+    return idb.open('restaurants', 1);
+  }
+
+  static createDB() {
+    if (!('indexedDB' in window)) {
+      console.log('This browser does not support IndexedDB');
+      return;
+    }
+    if (!navigator.serviceWorker) {
+      return Promise.resolve();
+    }
+    return idb.open('restaurants', 1, upgradeDB => {
+      console.log('making a new object store');
+      if (!upgradeDB.objectStoreNames.contains('reviews')) {
+        let store = upgradeDB.createObjectStore('reviews', {
+          keyPath: 'id',
+          autoIncrement: true
+        });
+        // store.createIndex('name', 'name', { unique: false });
+        // store.put({id: 123, name: 'coke', price: 10.99, quantity: 200});
+      }
+    });
+  }
+
+  static readDB() {
+    DBHelper.openDB()
+    .then(db => {
+      let tx = db.transaction('reviews', 'readonly');
+      let store = tx.objectStore('reviews');
+      return store.getAll();
+    }).then(items => {
+      console.log('read db ' + items);
+    });
+  }
 }

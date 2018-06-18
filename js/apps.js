@@ -1,13 +1,20 @@
 import { updateRestaurants, fetchNeighborhoods, fetchCuisines } from './main.js';
 import '../css/styles.css';
+import idb from 'idb';
+import DBHelper from './dbhelper.js';
 
 window.updateRestaurants = updateRestaurants;
+
+
 /**
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */
 document.addEventListener('DOMContentLoaded', (event) => {
     /* service worker */
     // registerServiceWorker();
+    const dbPromise = DBHelper.createDB();
+    const json = DBHelper.fetchRestaurantJson(dbPromise);
+    console.log('restaurant json ' + json);
     fetchNeighborhoods();
     fetchCuisines();
 });

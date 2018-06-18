@@ -85,7 +85,7 @@ function serveImage(request, storageCache) {
 self.addEventListener('fetch', event => {
     const url = new URL(event.request.url);
 
-    console.log('url ' + url);
+    // console.log('url ' + url);
     if (url.pathname.startsWith('/img/')) {
         event.respondWith(serveImage(event.request, imageCache));
         return;
