@@ -235,14 +235,22 @@ export default class DBHelper {
     }
     return idb.open('restaurants', 1, upgradeDB => {
       console.log('making a new object store');
-      if (!upgradeDB.objectStoreNames.contains('reviews')) {
-        let store = upgradeDB.createObjectStore('reviews', {
-          keyPath: 'id',
-          autoIncrement: true
-        });
-        // store.createIndex('name', 'name', { unique: false });
-        // store.put({id: 123, name: 'coke', price: 10.99, quantity: 200});
+      switch (upgradeDB.oldVersion) {
+        case 0:
+          if (!upgradeDB.objectStoreNames.contains('reviews')) {
+            let store = upgradeDB.createObjectStore('reviews', {
+              keyPath: 'id',
+              autoIncrement: true
+            });
+          // store.createIndex('name', 'name', { unique: false });
+          // store.put({id: 123, name: 'coke', price: 10.99, quantity: 200});
+          }
+        case 1:
+          let store = upgradeDB.transaction.objectStore('reviews');
+          store.createIndex('neighborhood', 'neighborhood');
+          store.createIndex('cuisine_type', 'cuisine_type');
       }
+      
     });
   }
 
