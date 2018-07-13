@@ -7,10 +7,12 @@
   <meta name="theme-color" content="#317EFB"/>
   <meta HTTP-EQUIV="CACHE-CONTROL" content="public, max-age=86400">
   <link rel="manifest" href="/manifest.json">
-  <link rel="stylesheet" href="dist/style.css">
-  <link rel="stylesheet" href="css/progressive-image.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link rel="preconnect" href="https://maps.googleapis.com">
+  
   <script async defer src="js/progressive-image.min.js"></script>
-  <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
+  
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
@@ -58,12 +60,14 @@
 
   <script type="application/javascript" charset="utf-8" src="dist/apps.js"></script>
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOaMGAYfc-rORJ1aaAAVSWG1zjQxF28j8&libraries=places&callback=initMap" target="_blank" rel="noopener"></script>
-
+  <link rel="stylesheet" href="dist/styles.css">
+  <link rel="stylesheet" href="css/progressive-image.min.css"> 
+  <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
 
   <footer id="footer">
     Copyright (c) 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
   </footer>
-
+  
 </body>
 
 </html>

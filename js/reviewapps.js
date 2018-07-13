@@ -1,6 +1,7 @@
 import {fetchRestaurantFromURL, fillBreadcrumb} from './restaurant_info.js';
 import DBHelper from './dbhelper.js';
 
+
 /**
  * Initialize Google map, called from HTML.
  */

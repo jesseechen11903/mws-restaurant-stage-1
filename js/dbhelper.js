@@ -63,22 +63,38 @@ export default class DBHelper {
    * Fetch all restaurants.
    * this is the main method to read and cache from indexDB
    */
-  static fetchRestaurants(callback) {
-    let dbPromise;
-    let response = DBHelper.readDB();
-    if (response) {
-      console.log('reading from indexeddb');
-      callback(null, response);
-    } else {
-      console.log('fetch from server');
-      DBHelper.fetchJson(callback);
+  static fetchRestaurants(callback, index) {
+    console.log('read db');
+    if (!('indexedDB' in window)) {
+      console.log('This browser does not support IndexedDB');
+      return;
     }
+    if (!navigator.serviceWorker) {
+      return Promise.resolve();
+    }
+    console.log('open db');
+    idb.open('restaurants', 1)
+      .then(db => {
+        let tx = db.transaction('reviews', 'readonly');
+        let store = tx.objectStore('reviews');
+        console.log('get from object store');
+        return index ? store.get(index) : store.getAll();
+      })
+      .then(() => {
+        console.log('reading from indexeddb');
+        callback(null, response);
+      })
+      .catch((error) => {
+        console.log(`fetch from server ${error.message}`);
+        DBHelper.fetchJson(callback);
+      });
   }
 
   /**
    * Fetch a restaurant by its ID.
    */
   static fetchRestaurantById(id, callback) {
+    const identifier = 'id';
     // fetch all restaurants with proper error handling.
     DBHelper.fetchRestaurants((error, restaurants) => {
       if (error) {
@@ -91,13 +107,14 @@ export default class DBHelper {
           callback('Restaurant does not exist', null);
         }
       }
-    });
+    }, identifier);
   }
 
   /**
    * Fetch restaurants by a cuisine type with proper error handling.
    */
   static fetchRestaurantByCuisine(cuisine, callback) {
+    const identifier = 'cuisine_type';
     // Fetch all restaurants  with proper error handling
     DBHelper.fetchRestaurants((error, restaurants) => {
       if (error) {
@@ -107,13 +124,14 @@ export default class DBHelper {
         const results = restaurants.filter(r => r.cuisine_type == cuisine);
         callback(null, results);
       }
-    });
+    }, identifier);
   }
 
   /**
    * Fetch restaurants by a neighborhood with proper error handling.
    */
   static fetchRestaurantByNeighborhood(neighborhood, callback) {
+    const identifier = 'neighborhood';
     // Fetch all restaurants
     DBHelper.fetchRestaurants((error, restaurants) => {
       if (error) {
@@ -214,17 +232,6 @@ export default class DBHelper {
     return marker;
   }
 
-  static openDB() {
-    if (!('indexedDB' in window)) {
-      console.log('This browser does not support IndexedDB');
-      return;
-    }
-    if (!navigator.serviceWorker) {
-      return Promise.resolve();
-    }
-    return idb.open('restaurants', 1);
-  }
-
   static createDB() {
     if (!('indexedDB' in window)) {
       console.log('This browser does not support IndexedDB');
@@ -242,26 +249,50 @@ export default class DBHelper {
               keyPath: 'id',
               autoIncrement: true
             });
-          // store.createIndex('name', 'name', { unique: false });
-          // store.put({id: 123, name: 'coke', price: 10.99, quantity: 200});
           }
         case 1:
           let store = upgradeDB.transaction.objectStore('reviews');
           store.createIndex('neighborhood', 'neighborhood');
           store.createIndex('cuisine_type', 'cuisine_type');
+          store.createIndex('id', 'id');
       }
-      
     });
   }
 
-  static readDB() {
-    DBHelper.openDB()
+  static readDB(index) {
+    console.log('read db');
+    if (!('indexedDB' in window)) {
+      console.log('This browser does not support IndexedDB');
+      return;
+    }
+    if (!navigator.serviceWorker) {
+      return Promise.resolve();
+    }
+    console.log('open db');
+    idb.open('restaurants', 1)
       .then(db => {
         let tx = db.transaction('reviews', 'readonly');
         let store = tx.objectStore('reviews');
-        return store.getAll();
-      }).then(items => {
-        console.log('read db ' + items);
+        console.log('get from object store');
+        return index ? store.get(index) : store.getAll();
+      })
+      .catch(error => {
+        console.log('error reading ' + error.message);
       });
+  }
+
+  static arrayBufferToBlob(buffer, type) {
+    return new Blob([buffer], {type: type});
+  }
+
+  static blobToArrayBuffer(blob) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.addEventListener('loadend', (e) => {
+        resolve(reader, result);
+      });
+      reader.addEventListener('error', reject);
+      reader.readAsArrayBuffer(blob);
+    })
   }
 }
