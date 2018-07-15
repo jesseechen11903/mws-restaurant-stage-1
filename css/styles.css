@@ -68,39 +68,7 @@ nav h1 a {
   text-transform: uppercase;
   line-height: 1.8 rem;
 }
-#breadcrumb {
-    padding: 10px 40px 16px;
-    list-style: none;
-    background-color: #eee;
-    font-size: 17px;
-    margin: 0;
-}
 
-/* Display list items side by side */
-#breadcrumb li {
-    display: inline;
-    font-size: 1.25rem;
-}
-
-/* Add a slash symbol (/) before/behind each list item */
-#breadcrumb li+li:before {
-    padding: 8px;
-    color: black;
-    content: "/\00a0";
-}
-
-/* Add a color to all links inside the list */
-#breadcrumb li a {
-    color: #0275d8;
-    text-decoration: none;
-    font-size: 1.5rem;
-}
-
-/* Add a color on mouse-over */
-#breadcrumb li a:hover {
-    color: #01447e;
-    text-decoration: underline;
-}
 /* ====================== Map ====================== */
 #map {
   height: 400px;
@@ -295,15 +263,6 @@ nav h1 a {
   flex-wrap: wrap;
 }
 
-
-table { 
-  table-layout:fixed;
-}
-td {
-  vertical-align: top;
-  text-align: left;
-}
-
 .restaurant-review:hover, .restaurant-review:focus {
   color: red;
 } 
@@ -320,13 +279,7 @@ td {
 .restaurant-selected {
   color: #8F4C00;
 }
-/* accessibility */
-.visuallyhidden {
-  visibility: hidden;
-  Position: absolute;  
-  Top: -9999px;
-  Left: -9999px;
-}
+
 
 /* media queries */
 @media screen and (max-width: 452px) {
