@@ -57,7 +57,7 @@ module.exports = {
     ]
 	},
 	plugins: [
-		ExtractNormalCSS,
-        ExtractReviewCSS,
+		ExtractNormalCSS // ,
+        // ExtractReviewCSS,
 	]
 };

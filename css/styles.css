@@ -75,32 +75,6 @@ nav h1 a {
   width: 100%;
   background-color: #ccc;
 }
-/* ====================== Restaurant Filtering ====================== */
-.filter-options {
-  width: 100%;
-  height: 50px;
-  background-color: #3397DB;
-  align-items: center;
-  display: flex;
-}
-.filter-options h2 {
-  color: #242424;
-  font-size: 1rem;
-  font-weight: normal;
-  line-height: 1;
-  margin: 0 20px;
-}
-.filter-options select {
-  background-color: white;
-  border: 1px solid #fff;
-  font-family: Arial,sans-serif;
-  font-size: 1rem;
-  height: 35px;
-  letter-spacing: 0;
-  margin: 10px;
-  padding: 0 10px;
-  width: 200px;
-}
 
 /* ====================== Restaurant Listing ====================== */
 #restaurants-list {
@@ -218,21 +192,7 @@ nav h1 a {
   text-transform: uppercase;
 	width: 100%;
 }
-#restaurant-container, #reviews-container {
-  border-bottom: 1px solid #d9d9d9;
-  border-top: 1px solid #fff;
-  padding: 0px 20px 30px;
-}
-#reviews-container {
-  padding-bottom: 80px;
-}
-#reviews-container h2 {
-  color: #8F4C00;
-  font-size: 24pt;
-  font-weight: 300;
-  letter-spacing: -1px;
-  padding-bottom: 1pt;
-}
+
 #reviews-list {
   margin: 0;
   padding: 0;
@@ -254,13 +214,6 @@ nav h1 a {
 }
 #restaurant-hours td {
   color: #666;
-}
-/* show the reviews in stack */
-.restaurant-reviews-container {
-  display: inline-flex;
-  flex-direction: row;
-  flex-flow: column;
-  flex-wrap: wrap;
 }
 
 .restaurant-review:hover, .restaurant-review:focus {

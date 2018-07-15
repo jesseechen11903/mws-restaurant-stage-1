@@ -48,6 +48,33 @@
       color: #01447e;
       text-decoration: underline;
     }
+
+    #restaurant-container,
+    #reviews-container {
+      border-bottom: 1px solid #d9d9d9;
+      border-top: 1px solid #fff;
+      padding: 0px 20px 30px;
+    }
+
+    #reviews-container {
+      padding-bottom: 80px;
+    }
+
+    #reviews-container h2 {
+      color: #8F4C00;
+      font-size: 24pt;
+      font-weight: 300;
+      letter-spacing: -1px;
+      padding-bottom: 1pt;
+    }
+
+    /* show the reviews in stack */
+    .restaurant-reviews-container {
+      display: inline-flex;
+      flex-direction: row;
+      flex-flow: column;
+      flex-wrap: wrap;
+    }
   </style>
 
   <title>Restaurant Info</title>
