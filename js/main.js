@@ -162,7 +162,8 @@ export const createRestaurantHTML = (restaurant) => {
 
   const image = document.createElement('img');
   image.className = 'restaurant-img';
-  image.src = 'p-270.jpg'; // image_src.substring(0, image_src.lastIndexOf('.')) + '-270' + image_src.substring(image_src.lastIndexOf('.'));
+  image.src = image_src.slice(0, image_src.lastIndexOf('/') + 1) + '1-p' + image_src.substring(image_src.lastIndexOf('.'));
+  /* image.src = image_src.substring(0, image_src.lastIndexOf('.')) + '-270' + image_src.substring(image_src.lastIndexOf('.')); */
   image.title = 'image of ' + restaurant.name;
   image.setAttribute('alt', restaurant.name);
   image.setAttribute('class', 'preview');
