@@ -10,6 +10,7 @@ module.exports = {
 		reviewapps: "./js/reviewapps",
 		main: "./js/main",
 		restaurant_info: "./js/restaurant_info",
+		modal: "./js/modal",
 		dbhelper: "./js/dbhelper"
 	},
 	// optimization: {
