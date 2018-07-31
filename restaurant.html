@@ -90,7 +90,8 @@
     <!-- Beginning breadcrumb -->
     <ul id="breadcrumb" role="listbox">
       <li>
-        <a class="restaurant-home" role="option" href="/">Home</a>
+        <a class="restaurant-home" role="option" href="/">Home /</a>
+        <a role="option" href="#myPopup" onclick="document.getElementById('submission').style.display='block'">Review</a>
       </li>
     </ul>
     <!-- End breadcrumb -->
@@ -134,7 +135,34 @@
           <h2 id="notification-title">Offline Notification</h2>
           <p id="notification-description">You are currently offline.</p>
         </div>
-      </div>
+    </div>
+
+    <!-- review form submission -->
+    <div id="submission" role="dialog" class="review-content" aria-labelledby="submission-title" style="display:none">
+        <div data-role="popup" id="myPopup" class="ui-content" style="width:80%;">
+          <a href="#" class="close" aria-label="close submission" onclick="document.getElementById('submission').style.display='none'">&times;</a>
+          <form method="post" id="review-form">
+            <div>
+              <h3 id="submission-title">Review Submission</h3>
+              <label for="restname" class="ui-hidden-accessible">Restaurant Name:</label>
+              <input type="text" name="restname" id="restname" disabled>
+              <label for="reviewername" class="ui-hidden-accessible">Reviewer Name:</label>
+              <input type="text" name="reviewername" id="reviewername" placeholder="Name">
+              <label for="comment" class="ui-hidden-accessible">Comments:</label>
+              <input type="textarea" name="comment" id="comment" placeholder="Comments">
+              <label for="rating" class="ui-hidden-accessible">Rating (between 1 to 10):</label>
+              <input type="number" name="rating" id="rating" placeholder="5" min="1" max="5">
+              <input type="hidden" name="restid" id="restid" disabled>
+              <input type="hidden" name="reviewid" id="reviewid" disabled>
+              <div class="clearfix">
+                  <button type="submit" class="newbtn">New</button>
+                  <button type="submit" class="editbtn">Edit</button>
+              </div>
+              
+            </div>
+          </form>
+        </div>
+    </div>
     <!-- End reviews -->
   </main>
   <!-- End main -->
