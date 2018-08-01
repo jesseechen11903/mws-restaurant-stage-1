@@ -19,7 +19,7 @@ export const fetchRestaurantFromURL = (callback) => {
     DBHelper.fetchRestaurantById(id, (error, restaurant) => {
       self.restaurant = restaurant;
       if (!restaurant) {
-        console.error(error);
+        console.log(error);
         return;
       }
       fillRestaurantHTML();
@@ -72,7 +72,16 @@ export const fillRestaurantHTML = (restaurant = self.restaurant) => {
     fillRestaurantHoursHTML();
   }
   // fill reviews
-  fillReviewsHTML();
+  DBHelper.fetchAllReviewsByRestaurant(restaurant.id, 'All', (error, reviews) => {
+    self.reviews = reviews;
+    if (!reviews) {
+      console.log(error);
+      return;
+    }
+    fillReviewsHTML();
+    callback(null, reviews);
+  });
+  // fillReviewsHTML();
 }
 
 /**
@@ -98,7 +107,7 @@ export const fillRestaurantHoursHTML = (operatingHours = self.restaurant.operati
 /**
  * Create all reviews HTML and add them to the webpage.
  */
-export const fillReviewsHTML = (reviews = self.restaurant.reviews) => {
+export const fillReviewsHTML = (reviews = self.reviews) => {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
   title.innerHTML = 'Reviews';
@@ -110,8 +119,9 @@ export const fillReviewsHTML = (reviews = self.restaurant.reviews) => {
     container.appendChild(noReviews);
     return;
   }
+  
   const ul = document.getElementById('reviews-list');
-  reviews.forEach(review => {
+  reviews.forEach((review) => {
     ul.appendChild(createReviewHTML(review));
   });
   container.appendChild(ul);
@@ -125,12 +135,18 @@ export const createReviewHTML = (review) => {
   li.setAttribute('role', 'listitem');
   li.setAttribute('tabindex', '0');
   const name = document.createElement('p');
-  name.innerHTML = review.name;
+  const reviewId = review.id;
+  const restaurantId = review.restaurant_id;
+  name.innerHTML = `${review.name} <a role="option" href="#myPopup" class="updateReview" onclick="retrieveReviewById(${reviewId})">Update Review</a>`;
   li.appendChild(name);
-
-  const date = document.createElement('p');
-  date.innerHTML = review.date;
+  
+  /* const date = document.createElement('p');
+  date.innerHTML = review.createdAt;
   li.appendChild(date);
+
+  const updateDate = document.createElement('p');
+  updateDate.innerHTML = review.updatedAt;
+  li.appendChild(updateDate); */
 
   const rating = document.createElement('p');
   rating.innerHTML = `Rating: ${review.rating}`;
@@ -140,9 +156,36 @@ export const createReviewHTML = (review) => {
   comments.innerHTML = review.comments;
   li.appendChild(comments);
 
+  // updateReviewModal(review,);
   return li;
 }
 
+/* retrieve the review for update */
+export const retrieveReviewById = (reviewId) => {
+  // submit a fetch request to retrieve the particular review
+   // fill reviews
+   DBHelper.fetchAllReviewsByRestaurant(reviewId, 'I', (error, reviews) => {
+    self.reviews = reviews;
+    if (!reviews) {
+      console.log(error);
+      return;
+    }
+    updateReviewModal();
+    callback(null, reviews);
+  });
+}
+
+/* update review modal field values */
+export const updateReviewModal = (review = self.reviews) => {
+  document.getElementById('submission').style.display = 'block';
+  document.getElementById('reviewid').value = review.id;
+  document.getElementById('reviewername').value = review.name;
+  document.getElementById('reviewername').disabled = true;
+  document.getElementById('comment').value = review.comments;
+  document.getElementById('rating').value = review.rating;
+  document.getElementById('restid').value = review.restaurant_id;
+  document.getElementById('createReview').style.display = 'none';
+}
 /**
  * Add restaurant name to the breadcrumb navigation menu
  */

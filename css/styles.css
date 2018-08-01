@@ -281,6 +281,9 @@ nav h1 a {
   cursor: pointer;
 }
 
+.updateReview {
+  float: right;
+}
 /* Full-width input fields */
 input[type=text], input[type=textarea] {
   width: 95%;

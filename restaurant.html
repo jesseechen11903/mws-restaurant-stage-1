@@ -138,14 +138,13 @@
     </div>
 
     <!-- review form submission -->
+    <a name="myPopup"></a>
     <div id="submission" role="dialog" class="review-content" aria-labelledby="submission-title" style="display:none">
         <div data-role="popup" id="myPopup" class="ui-content" style="width:80%;">
-          <a href="#" class="close" aria-label="close submission" onclick="document.getElementById('submission').style.display='none'">&times;</a>
+          <a href="#" class="close" aria-label="close submission" onclick="document.getElementById('submission').style.display='none';document.getElementById('createReview').style.display='inline-flex';">&times;</a>
           <form method="post" id="review-form">
             <div>
               <h3 id="submission-title">Review Submission</h3>
-              <label for="restname" class="ui-hidden-accessible">Restaurant Name:</label>
-              <input type="text" name="restname" id="restname" disabled>
               <label for="reviewername" class="ui-hidden-accessible">Reviewer Name:</label>
               <input type="text" name="reviewername" id="reviewername" placeholder="Name">
               <label for="comment" class="ui-hidden-accessible">Comments:</label>
@@ -155,8 +154,8 @@
               <input type="hidden" name="restid" id="restid" disabled>
               <input type="hidden" name="reviewid" id="reviewid" disabled>
               <div class="clearfix">
-                  <button type="submit" class="newbtn">New</button>
-                  <button type="submit" class="editbtn">Edit</button>
+                  <button type="submit" id="createReview" class="newbtn">New</button>
+                  <button type="submit" class="editbtn">Save</button>
               </div>
               
             </div>

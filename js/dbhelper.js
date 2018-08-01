@@ -111,6 +111,30 @@ export default class DBHelper {
   }
 
   /**
+   * Fetch a restaurant by its ID.
+   */
+  static fetchAllReviewsByRestaurant(id, type = 'All', callback) {
+    let restaurant_url = DBHelper.DATABASE_URL;
+    if (type === 'All') {
+      restaurant_url = restaurant_url + `/reviews/?restaurant_id=${id}`;
+    } else if (type === 'I') {
+      restaurant_url = restaurant_url + `/reviews/${id}`;
+    }
+    
+    fetch(restaurant_url)
+      .then(response => response.json())
+      .then((response) => {
+        console.log(response);
+        // store
+        callback(null, response);
+      })
+      .catch((response) => {
+        const error = (`Request failed. Returned status of ${response.status}`);
+        callback(error, null);
+      });
+  }
+
+  /**
    * Fetch restaurants by a cuisine type with proper error handling.
    */
   static fetchRestaurantByCuisine(cuisine, callback) {
