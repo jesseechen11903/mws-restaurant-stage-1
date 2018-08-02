@@ -110,7 +110,8 @@ export const fillRestaurantHoursHTML = (operatingHours = self.restaurant.operati
 export const fillReviewsHTML = (reviews = self.reviews) => {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
-  title.innerHTML = 'Reviews' +  '<a role="option" href="#" class="updateReview" onclick="document.getElementById(\'submission\').style.display=\'block\'">New</a>';
+  // title.innerHTML = 'Reviews' +  '<a role="option" href="#" class="updateReview" onclick="document.getElementById(\'submission\').style.display=\'block\'">New</a>';
+  title.innerHTML = 'Reviews' + '<button type="submit" id="createReview" class="iconbtn" onclick="document.getElementById(\'submission\').style.display=\'block\'">New</button>'
   container.appendChild(title);
 
   if (!reviews) {
@@ -137,7 +138,8 @@ export const createReviewHTML = (review) => {
   const name = document.createElement('p');
   const reviewId = review.id;
   const restaurantId = review.restaurant_id;
-  name.innerHTML = `${review.name} <a role="option" href="#" class="updateReview" onclick="retrieveReviewById(${reviewId})">Update</a>`;
+  // name.innerHTML = `${review.name} <a role="option" href="#" class="updateReview" onclick="retrieveReviewById(${reviewId})">Update</a>`;
+  name.innerHTML = `${review.name} <button class="iconbtn" onclick="retrieveReviewById(${reviewId})">Edit</button>`;
   li.appendChild(name);
   
   /* const date = document.createElement('p');
@@ -173,6 +175,16 @@ export const retrieveReviewById = (reviewId) => {
     updateReviewModal();
     callback(null, reviews);
   });
+}
+
+/* create/update review */
+export const updateReview = () => {
+  console.log('update review');
+}
+
+/* store the reviw on localStorage */ 
+export const store = () => {
+  let newPost = "";  // inputted values
 }
 
 /* update review modal field values */

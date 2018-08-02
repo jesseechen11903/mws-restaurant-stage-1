@@ -20,6 +20,10 @@
             console.log('Registration failed with ' + error);
           });
       });
+      navigator.serviceWorker.addEventListener('message', () => {
+        alert(event.data.alert);
+        store();
+      });
     }
   </script>
 

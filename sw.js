@@ -111,6 +111,25 @@ self.addEventListener('fetch', event => {
           // by returning a Promise that resolves to a Response.
         );
       }
+
+      if (event.request.method === 'POST') {
+          let newObj = {};
+          event.respondWith(
+            // Try to get the response from the network
+            fetch(event.request.clone()).catch(function() {
+                // If it doesn't work, post a failure message to the client
+                // self.clients.match(thisClient).then(function(client) {
+                //     client.postMessage({
+                //         message: "Post unsuccessful.",
+                //         alert: alert // A string we instantiated earlier
+                //     });
+                // });
+                // Respond with the page that the request originated from
+                return caches.match(event.request.clone().referrer);
+            })
+        );
+      }
+
     event.respondWith(
         caches.match(event.request).then(response => {
             console.log('fetching');
