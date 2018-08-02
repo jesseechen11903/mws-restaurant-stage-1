@@ -283,6 +283,7 @@ nav h1 a {
 
 .updateReview {
   float: right;
+  font-size: 1rem;
 }
 /* Full-width input fields */
 input[type=text], input[type=textarea] {

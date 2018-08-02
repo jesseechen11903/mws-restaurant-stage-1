@@ -110,7 +110,7 @@ export const fillRestaurantHoursHTML = (operatingHours = self.restaurant.operati
 export const fillReviewsHTML = (reviews = self.reviews) => {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
-  title.innerHTML = 'Reviews';
+  title.innerHTML = 'Reviews' +  '<a role="option" href="#" class="updateReview" onclick="document.getElementById(\'submission\').style.display=\'block\'">New</a>';
   container.appendChild(title);
 
   if (!reviews) {
@@ -137,7 +137,7 @@ export const createReviewHTML = (review) => {
   const name = document.createElement('p');
   const reviewId = review.id;
   const restaurantId = review.restaurant_id;
-  name.innerHTML = `${review.name} <a role="option" href="#myPopup" class="updateReview" onclick="retrieveReviewById(${reviewId})">Update Review</a>`;
+  name.innerHTML = `${review.name} <a role="option" href="#" class="updateReview" onclick="retrieveReviewById(${reviewId})">Update</a>`;
   li.appendChild(name);
   
   /* const date = document.createElement('p');
