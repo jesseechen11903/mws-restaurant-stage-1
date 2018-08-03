@@ -55,14 +55,14 @@ export const fillRestaurantHTML = (restaurant = self.restaurant) => {
   image.src = getImageSource(imagename, 'lg');
   image.setAttribute('alt', restaurant.name);
 
-  const picture =document.getElementById('restaurant-pic');
+  const picture = document.getElementById('restaurant-pic');
   const sourceElement = picture.getElementsByTagName('source');
   // 900 breakpoint, lg
-  sourceElement[0].setAttribute('srcset', getImageSource(imagename, 'lg') + ' 1x,' + getImageSource(imagename,'lg_2x') + ' 2x');
+  sourceElement[0].setAttribute('srcset', getImageSource(imagename, 'lg') + ' 1x,' + getImageSource(imagename, 'lg_2x') + ' 2x');
   // 600 breakpoint, sm
-  sourceElement[1].setAttribute('srcset', getImageSource(imagename, 'sm')+ ' 1x,' + getImageSource(imagename,'sm_2x') + ' 2x');
+  sourceElement[1].setAttribute('srcset', getImageSource(imagename, 'sm') + ' 1x,' + getImageSource(imagename, 'sm_2x') + ' 2x');
   // 601 breakpoint, md
-  sourceElement[2].setAttribute('srcset', getImageSource(imagename, 'md')+ ' 1x,' + getImageSource(imagename,'md_2x') + ' 2x');
+  sourceElement[2].setAttribute('srcset', getImageSource(imagename, 'md') + ' 1x,' + getImageSource(imagename, 'md_2x') + ' 2x');
 
   const cuisine = document.getElementById('restaurant-cuisine');
   cuisine.innerHTML = restaurant.cuisine_type;
@@ -79,7 +79,7 @@ export const fillRestaurantHTML = (restaurant = self.restaurant) => {
       return;
     }
     fillReviewsHTML();
-    callback(null, reviews);
+    // callback(null, reviews);
   });
   // fillReviewsHTML();
 }
@@ -111,7 +111,7 @@ export const fillReviewsHTML = (reviews = self.reviews) => {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
   // title.innerHTML = 'Reviews' +  '<a role="option" href="#" class="updateReview" onclick="document.getElementById(\'submission\').style.display=\'block\'">New</a>';
-  title.innerHTML = 'Reviews' + '<button type="submit" id="createReview" class="iconbtn" onclick="document.getElementById(\'submission\').style.display=\'block\'">New</button>'
+  title.innerHTML = 'Reviews' + '<button type="submit" id="createReview" class="iconbtn" onclick="updateReviewModal(\'reset\')">New</button>'
   container.appendChild(title);
 
   if (!reviews) {
@@ -120,7 +120,7 @@ export const fillReviewsHTML = (reviews = self.reviews) => {
     container.appendChild(noReviews);
     return;
   }
-  
+
   const ul = document.getElementById('reviews-list');
   reviews.forEach((review) => {
     ul.appendChild(createReviewHTML(review));
@@ -141,7 +141,7 @@ export const createReviewHTML = (review) => {
   // name.innerHTML = `${review.name} <a role="option" href="#" class="updateReview" onclick="retrieveReviewById(${reviewId})">Update</a>`;
   name.innerHTML = `${review.name} <button class="iconbtn" onclick="retrieveReviewById(${reviewId})">Edit</button>`;
   li.appendChild(name);
-  
+
   /* const date = document.createElement('p');
   date.innerHTML = review.createdAt;
   li.appendChild(date);
@@ -165,43 +165,60 @@ export const createReviewHTML = (review) => {
 /* retrieve the review for update */
 export const retrieveReviewById = (reviewId) => {
   // submit a fetch request to retrieve the particular review
-   // fill reviews
-   DBHelper.fetchAllReviewsByRestaurant(reviewId, 'I', (error, reviews) => {
+  // fill reviews
+  DBHelper.fetchAllReviewsByRestaurant(reviewId, 'I', (error, reviews) => {
     self.reviews = reviews;
     if (!reviews) {
       console.log(error);
       return;
     }
     updateReviewModal();
-    callback(null, reviews);
+    // callback(null, reviews);
   });
 }
 
 /* create/update review */
 export const updateReview = () => {
   console.log('update review');
+  // if goes offline store to localStorage
 }
 
-/* store the reviw on localStorage */ 
+/* store the reviw on localStorage */
 export const store = () => {
-  let newPost = "";  // inputted values
+  let newPost = document.getElementById('submission');
+  let review = {};
+  review.review_id = document.getElementById('reviewid').value;
+  review.name = document.getElementById('reviewername').value;
+  review.comments = document.getElementById('comment').value;
+  review.rating = document.getElementById('rating').value;
+  review.restaurant_id = document.getElementById('restid').value;
+  // store the data
+  localStorage.setItem('newPost', review);
 }
 
 /* update review modal field values */
 export const updateReviewModal = (review = self.reviews) => {
   document.getElementById('submission').style.display = 'block';
-  document.getElementById('reviewid').value = review.id;
-  document.getElementById('reviewername').value = review.name;
-  document.getElementById('reviewername').disabled = true;
-  document.getElementById('comment').value = review.comments;
-  document.getElementById('rating').value = review.rating;
-  document.getElementById('restid').value = review.restaurant_id;
   document.getElementById('createReview').style.display = 'none';
+  document.getElementById('restid').value = review.restaurant_id;
+  if (review === 'reset') {
+    document.getElementById('reviewid').value = '';
+    document.getElementById('reviewername').value = '';
+    document.getElementById('reviewername').disabled = false;
+    document.getElementById('comment').value = '';
+    document.getElementById('rating').value = '5';
+  } else {
+    document.getElementById('reviewid').value = review.id;
+    document.getElementById('reviewername').value = review.name;
+    document.getElementById('reviewername').disabled = true;
+    document.getElementById('comment').value = review.comments;
+    document.getElementById('rating').value = review.rating;
+  }
 }
 /**
  * Add restaurant name to the breadcrumb navigation menu
  */
-export const fillBreadcrumb = (restaurant=self.restaurant) => {
+export const fillBreadcrumb = (restaurant = self.restaurant) => {
   const breadcrumb = document.getElementById('breadcrumb');
   const li = document.createElement('li');
   li.setAttribute('class', 'restaurant-selected');
