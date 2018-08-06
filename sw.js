@@ -22,6 +22,75 @@ let urlsToCache = [
     '/restaurant.html'
 ];
 
+/* write the indexed DB boiler plate for caching */
+const IDB_VERSION = 1;
+let idb;
+const STORE_CACHE = 'newPosts';
+const RETRY_TIME = 86400000;
+
+function openDB() {
+    let cacheDB = indexedDB.open('reviewPosts', IDB_VERSION);
+
+    cacheDB.onerror = function (error) {
+        console.log('IndexedDB error:', error);
+    };
+
+    cacheDB.onupgradneeded = function () {
+        console.log('upgrade');
+        this.result.createObjectStore(STORE_CACHE, { keyPath: 'restaurant_id' });
+    };
+
+    cacheDB.onsuccess = function () {
+        console.log('success in indexedDB');
+        idb = this.result;
+        // get the replay request
+        replayReviewSaved();
+    };
+}
+
+function getObjectStore(storeName, mode) {
+    console.log('getObjectStore');
+    let idb = indexedDB.open('reviewPosts', IDB_VERSION);
+    return idb.transaction(storeName, mode).objectStore(storeName);
+}
+
+function replayReviewSaved() {
+    let requests = [];
+    getObjectStore(STORE_CACHE).openCursor().onsuccess = function (event) {
+        let cursor = event.target.result;
+
+        if (cursor) {
+            requests.push(cursor.value);
+            cursor.continue();
+        } else {
+            requests.forEach((req) => {
+                let inTime = Date.now() - req.timestamp;
+                if (inTime > RETRY_TIME) {
+                    getObjectStore(STORE_CACHE, 'readwrite').delete(req.id);
+                    console.log('data is too old');
+                } else {
+                    const review_url = `http://localhost:1337/reviews/`;
+                    fetch(review_url, {
+                        method: 'post',
+                        body: req
+                    }).then(response => {
+                        if (response.status < 400) {
+                            getObjectStore(STORE_CACHE, 'readwrite').delete(req.restaurant_id);
+                            console.log('successful replay to save data');
+                        } else {
+                            console.log('failed replay to save data:' + response);
+                        }
+                    }).catch(error => {
+                        console.log('Replaying failed:' + error);
+                    })
+                }
+            })
+        }
+    }
+}
+
+openDB();
+
 self.addEventListener('install', event => {
     console.log('v1 installing...');
 
@@ -111,33 +180,7 @@ self.addEventListener('fetch', event => {
             // by returning a Promise that resolves to a Response.
         );
     }
-
-    if (event.request.method === 'POST') {
-        let newObj = {};
-        event.respondWith(
-            event.request.formData().then(formData => {
-
-                for(var pair of formData.entries()) {
-                  var key = pair[0];
-                  var value =  pair[1];
-                  newObj[key] = value;
-                }
-            // Try to get the response from the network
-            // fetch(event.request.clone()).catch(function () {
-            //     // If it doesn't work, post a failure message to the client
-            //     self.clients.match(thisClient).then(function (client) {
-            //         client.postMessage({
-            //             message: "Post unsuccessful.",
-            //             alert: alert // A string we instantiated earlier
-            //         });
-            //     });
-                
-            })
-        );
-        // Respond with the page that the request originated from
-        return caches.match(event.request.clone().referrer);
-    }
-    else {
+    if (event.request.method === 'GET') {
         event.respondWith(
             caches.match(event.request).then(response => {
                 console.log('fetching');
@@ -153,7 +196,61 @@ self.addEventListener('fetch', event => {
             })
         );
     }
-});
+    else {
+        if (url.origin === location.origin) {
+            if (url.pathname === '/restaurant.html') {
+                event.respondWith(caches.match('/restaurant.html'));
+                return;
+            }
+        }
+        let newObj = {};
+
+        if (url.pathname === '/reviews/') {
+            event.respondWith(
+                caches.match(event.request).then(response => {
+                    if (response) {
+                        console.log('Found response in cache:', response);
+                        return response;
+                    }
+                    return fetch(event.request.clone())
+                        .then(response => {
+                            if (response.status < 400) {
+                                cache.put(event.request, response.clone());
+                            }
+                            else if (response.status >= 500) {
+                                event.request.formData().then(formData => {
+                                    for (var pair of formData.entries()) {
+                                        var key = pair[0];
+                                        var value = pair[1];
+                                        newObj[key] = value;
+                                    }
+                                }).then(response => {
+                                    // check for request
+                                    getObjectStore(STORE_CACHE, 'readwrite').add({
+                                        timestamp: Date.now(),
+                                        restaurant_id: 123,
+                                        name: 'Jessica',
+                                        comments: 'Something'
+                                    })
+                                    // notify offline
+                                    let modal = document.getElementById('notification');
+                                    modal.style.display = 'none';
+                                });
+                            }
+                            return response;
+                        }).catch(error => {
+                            console.log(error);
+                            return;
+                        });
+                    })
+                );
+                return;
+            }
+        }
+
+        // Respond with the page that the request originated from
+        return; // caches.match(event.request.clone().referrer);
+    });
 
 self.addEventListener('message', function (event) {
     if (event.data.action === 'skipWaiting') {

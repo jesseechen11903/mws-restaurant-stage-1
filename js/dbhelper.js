@@ -27,7 +27,8 @@ export default class DBHelper {
     fetch(restaurant_url)
       .then(response => response.json())
       .then((response) => {
-        // console.log(response);
+        console.log(response);
+        dbPromise = idb.open('restaurants_review');
         dbPromise.then(db => {
           console.log('read transaction reviews');
           const tx = db.transaction('reviews', 'readwrite');
@@ -35,6 +36,8 @@ export default class DBHelper {
             tx.objectStore('reviews').put(data);
           })
           return tx.complete;
+        }).catch(error => {
+          console.log('error');
         });
       })
       .catch((response) => {
@@ -75,8 +78,8 @@ export default class DBHelper {
       return Promise.resolve();
     }
     console.log('open db');
-    idb.open('restaurants', 1)
-      .then(db => {
+    const dbpromise = idb.open('restaurants', 1)
+    dbpromise.then(db => {
         let tx = db.transaction('reviews', 'readonly');
         let store = tx.objectStore('reviews');
         console.log('get from object store');
@@ -162,7 +165,7 @@ export default class DBHelper {
         console.log(response);
         callback(null, response);
         // store
-        const dbPromise = idb.open('restaurants');
+        const dbPromise = idb.open('restaurants_review');
         dbPromise.then(db => {
           const tx = db.transaction('reviews-info', 'readwrite');
           response.map(data => {
@@ -172,7 +175,7 @@ export default class DBHelper {
           return tx.complete;
         })
         .catch((response) => {
-            console.log('dffdfdkfdjfkdfjkdfjkdkfdkj' + response);
+            console.log('error here' + response);
             // DOMEXception here
         });
       })
@@ -185,10 +188,10 @@ export default class DBHelper {
 
   /* post the review data */
   static postReviewData(review, callback) {
-    let restaurant_url = `${DBHelper.DATABASE_URL}/reviews`;
+    let restaurant_url = `${DBHelper.DATABASE_URL}/reviews/`;
     
     if (review && review.review_id) {
-      restaurant_url = restaurant_url.concat(`/${review.review_id}`);
+      restaurant_url = restaurant_url.concat(`${review.review_id}`);
     }
     let value = {};
     value.name = review.name;
@@ -364,6 +367,30 @@ export default class DBHelper {
     });
   }
 
+  static createReviewDB() {
+    if (!('indexedDB' in window)) {
+      console.log('This browser does not support IndexedDB');
+      return;
+    }
+    if (!navigator.serviceWorker) {
+      return Promise.resolve();
+    }
+    return idb.open('restaurants_review', 1, upgradeDB => {
+      console.log('making a new object store');
+      switch (upgradeDB.oldVersion) {
+        case 0:
+          if (!upgradeDB.objectStoreNames.contains('reviews-info')) {
+            let review = upgradeDB.createObjectStore('reviews-info', {
+              keyPath: 'id',
+              autoIncrement: true
+            })
+          }
+        case 1:
+          let review = upgradeDB.transaction.objectStore('reviews-info');
+          review.createIndex('id', 'id');
+      }
+    });
+  }
   static readDB(index) {
     console.log('read db');
     if (!('indexedDB' in window)) {

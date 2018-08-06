@@ -73,10 +73,10 @@ export const fillRestaurantHTML = (restaurant = self.restaurant) => {
   }
 
   // create DB
-  const dbPromise = DBHelper.createDB();
+  const dbPromiser = DBHelper.createReviewDB();
 
   // fill reviews
-  DBHelper.fetchAllReviewsByRestaurant(restaurant.id, 'All',  dbPromise, (error, reviews) => {
+  DBHelper.fetchAllReviewsByRestaurant(restaurant.id, 'All',  dbPromiser, (error, reviews) => {
     self.reviews = reviews;
     if (!reviews) {
       console.log(error);
