@@ -23,11 +23,13 @@ export default class DBHelper {
   static fetchRestaurantJson(dbPromise) {
     const restaurant_url = DBHelper.DATABASE_URL + '/restaurants';
 
+    console.log('fetchRestaurantJson');
     fetch(restaurant_url)
       .then(response => response.json())
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         dbPromise.then(db => {
+          console.log('read transaction reviews');
           const tx = db.transaction('reviews', 'readwrite');
           response.map(data => {
             tx.objectStore('reviews').put(data);
@@ -49,7 +51,7 @@ export default class DBHelper {
     fetch(restaurant_url)
       .then(response => response.json())
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         // store
         callback(null, response);
       })
@@ -111,27 +113,100 @@ export default class DBHelper {
   }
 
   /**
-   * Fetch a restaurant by its ID.
+   * Fetch all restaurants.
+   * this is the main method to read and cache from indexDB
    */
-  static fetchAllReviewsByRestaurant(id, type = 'All', callback) {
+  static fetchAllReviewsByRestaurant(id, type = 'All', dbPromise, callback) {
     let restaurant_url = DBHelper.DATABASE_URL;
     if (type === 'All') {
       restaurant_url = restaurant_url + `/reviews/?restaurant_id=${id}`;
     } else if (type === 'I') {
       restaurant_url = restaurant_url + `/reviews/${id}`;
     }
-    
+
+    fetch(restaurant_url)
+      .then(response => response.json())
+      .then(response => {
+        dbPromise.then(db => {
+          const tx = db.transaction('reviews-info', 'readwrite');
+          response.map(data => {
+            tx.objectStore('reviews-info').put(data);
+          })
+          return tx.complete;
+        })
+        .catch(error => {
+          console.log('failed to store ' + error.message);
+        });
+        callback(null, response);
+      })
+      .catch((error) => {
+        console.log(`fetch from server ${error.message}`);
+        DBHelper.fetchReviews(id, type, callback);
+      });
+  }
+  /**
+   * Fetch a restaurant by its ID.
+   */
+  static fetchReviews(id, type = 'All', callback) {
+    // static fetchAllReviewsByRestaurant(id, type = 'All', callback) {
+    let restaurant_url = DBHelper.DATABASE_URL;
+    if (type === 'All') {
+      restaurant_url = restaurant_url + `/reviews/?restaurant_id=${id}`;
+    } else if (type === 'I') {
+      restaurant_url = restaurant_url + `/reviews/${id}`;
+    }
+
     fetch(restaurant_url)
       .then(response => response.json())
       .then((response) => {
         console.log(response);
-        // store
         callback(null, response);
+        // store
+        const dbPromise = idb.open('restaurants');
+        dbPromise.then(db => {
+          const tx = db.transaction('reviews-info', 'readwrite');
+          response.map(data => {
+            console.log('help emmemememememe');
+            tx.objectStore('reviews-info').put(data);
+          })
+          return tx.complete;
+        })
+        .catch((response) => {
+            console.log('dffdfdkfdjfkdfjkdfjkdkfdkj' + response);
+            // DOMEXception here
+        });
       })
       .catch((response) => {
         const error = (`Request failed. Returned status of ${response.status}`);
+
         callback(error, null);
       });
+  }
+
+  /* post the review data */
+  static postReviewData(review, callback) {
+    let restaurant_url = `${DBHelper.DATABASE_URL}/reviews`;
+    
+    if (review && review.review_id) {
+      restaurant_url = restaurant_url.concat(`/${review.review_id}`);
+    }
+    let value = {};
+    value.name = review.name;
+    value.rating = review.rating;
+    value.comments = review.comments;
+    fetch(restaurant_url, {
+      method: 'post',
+      body: value
+    }).then(response => {
+      console.log('update ' + response);
+      return response.json();
+    }).then(response => {
+      console.log('data saved');
+    }).catch(response => {
+      let msg = 'Currently offline data will be save later';
+      // navigator.serviceWorker.controller.postMessage(`Client 1 says ${msg}`);
+      callback(null, review);
+    })
   }
 
   /**
@@ -273,12 +348,18 @@ export default class DBHelper {
               keyPath: 'id',
               autoIncrement: true
             });
+            // let review = upgradeDB.createObjectStore('reviews-info', {
+            //   keyPath: ['id', 'restaurant_id'],
+            //   autoIncrement: true
+            // })
           }
         case 1:
           let store = upgradeDB.transaction.objectStore('reviews');
           store.createIndex('neighborhood', 'neighborhood');
           store.createIndex('cuisine_type', 'cuisine_type');
           store.createIndex('id', 'id');
+          // let review = upgradeDB.transaction.objectStore('reviews-info');
+          // store.createIndex('id, restaurant_id', ['id', 'restaurant_id']);
       }
     });
   }
@@ -306,7 +387,7 @@ export default class DBHelper {
   }
 
   static arrayBufferToBlob(buffer, type) {
-    return new Blob([buffer], {type: type});
+    return new Blob([buffer], { type: type });
   }
 
   static blobToArrayBuffer(blob) {

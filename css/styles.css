@@ -329,7 +329,7 @@ button:hover {
 }
 
 /* Float cancel, new and edit buttons and add an equal width */
-.newbtn, .editbtn {
+.editbtn {
   width: 40%;
 }
 
@@ -369,7 +369,7 @@ button:hover {
 }
 /* Change styles for cancel button and signup button on extra small screens */
 @media screen and (max-width: 452px) {
-  .cancelbtn, .newbtn, .editbtn {
+  .editbtn {
     width: 100%;
   }
 }

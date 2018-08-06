@@ -1,7 +1,8 @@
-import {fetchRestaurantFromURL, fillBreadcrumb, retrieveReviewById, updateReviewModal} from './restaurant_info.js';
+import {fetchRestaurantFromURL, fillBreadcrumb, retrieveReviewById, updateReview, updateReviewModal} from './restaurant_info.js';
 import DBHelper from './dbhelper.js';
 
 window.retrieveReviewById = retrieveReviewById;
+window.updateReview = updateReview;
 window.updateReviewModal = updateReviewModal;
 
 /**

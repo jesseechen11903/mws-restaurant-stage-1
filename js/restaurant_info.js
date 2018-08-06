@@ -71,8 +71,12 @@ export const fillRestaurantHTML = (restaurant = self.restaurant) => {
   if (restaurant.operating_hours) {
     fillRestaurantHoursHTML();
   }
+
+  // create DB
+  const dbPromise = DBHelper.createDB();
+
   // fill reviews
-  DBHelper.fetchAllReviewsByRestaurant(restaurant.id, 'All', (error, reviews) => {
+  DBHelper.fetchAllReviewsByRestaurant(restaurant.id, 'All',  dbPromise, (error, reviews) => {
     self.reviews = reviews;
     if (!reviews) {
       console.log(error);
@@ -166,7 +170,7 @@ export const createReviewHTML = (review) => {
 export const retrieveReviewById = (reviewId) => {
   // submit a fetch request to retrieve the particular review
   // fill reviews
-  DBHelper.fetchAllReviewsByRestaurant(reviewId, 'I', (error, reviews) => {
+  DBHelper.fetchAllReviewsByRestaurant(reviewId, 'I', null, (error, reviews) => {
     self.reviews = reviews;
     if (!reviews) {
       console.log(error);
@@ -181,10 +185,7 @@ export const retrieveReviewById = (reviewId) => {
 export const updateReview = () => {
   console.log('update review');
   // if goes offline store to localStorage
-}
-
-/* store the reviw on localStorage */
-export const store = () => {
+  
   let newPost = document.getElementById('submission');
   let review = {};
   review.review_id = document.getElementById('reviewid').value;
@@ -193,6 +194,15 @@ export const store = () => {
   review.rating = document.getElementById('rating').value;
   review.restaurant_id = document.getElementById('restid').value;
   // store the data
+  DBHelper.postReviewData(review, (error) => {
+    displayOfflineMsg(review);
+  });
+}
+
+export const displayOfflineMsg = (review) => {
+  let modal = document.getElementById('notification');
+
+  modal.style.display = 'none';
   localStorage.setItem('newPost', review);
 }
 

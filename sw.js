@@ -10,7 +10,7 @@ const allCaches = [
     mapCache,
     staticMapCache,
     googleMapCache
-  ];
+];
 
 let urlsToCache = [
     '/',
@@ -18,6 +18,7 @@ let urlsToCache = [
     '/dist/main.js',
     '/dist/dbhelper.js',
     '/dist/restaurant_info.js',
+    '/dist/modal.js',
     '/restaurant.html'
 ];
 
@@ -46,9 +47,9 @@ self.addEventListener('activate', event => {
                 return cacheName.startsWith('restaurant-') &&
                     !allCaches.includes(cacheName);
             })
-            .map(key => {
-                return caches.delete(key);
-            })
+                .map(key => {
+                    return caches.delete(key);
+                })
         )).then(() => {
             console.log('Cache now ready to handle fetches!');
             // let's handle the initial data.json load and cache the image
@@ -61,20 +62,19 @@ self.addEventListener('activate', event => {
 function serveImage(request, storageCache) {
     // let storageUrl = request.url.replace(/-\d+px\.jpg$/, '');
     let storageUrl = request.url.replace(/-\d+px\.jpg$/, '');
-    
-    return caches.open(storageCache).then(cache =>
-    {
-            return cache.match(storageUrl).then(response => {
-                if (response) return response;
-  
-                return fetch(request).then(networkResponse => {
-                    cache.put(storageUrl, networkResponse.clone());
-                    return networkResponse;
-                })
+
+    return caches.open(storageCache).then(cache => {
+        return cache.match(storageUrl).then(response => {
+            if (response) return response;
+
+            return fetch(request).then(networkResponse => {
+                cache.put(storageUrl, networkResponse.clone());
+                return networkResponse;
+            })
                 .catch(() => {
                     console.log('fetching error in serveImage');
                 })
-            })
+        })
             .catch(() => {
                 console.log('match error');
             });
@@ -94,7 +94,7 @@ self.addEventListener('fetch', event => {
     // const regex = /(https?:\/\/(.+?\.)?googleapis\.com(\/[A-Za-z0-9\-\._~:\/\?#\[\]@!$&'\(\)\*\+,;\=]*)?)/;
 
     let testUrl = 'googleapis.com';
-    
+
     if (url.href.indexOf(testUrl) != -1) {
         event.respondWith(serveImage(event.request, mapCache));
         return;
@@ -107,47 +107,57 @@ self.addEventListener('fetch', event => {
 
     if (event.request.url.indexOf('https://maps.googleapi.com/js') == 0) {
         event.respondWith(
-          // Handle Maps API requests in a generic fashion,
-          // by returning a Promise that resolves to a Response.
+            // Handle Maps API requests in a generic fashion,
+            // by returning a Promise that resolves to a Response.
         );
-      }
+    }
 
-      if (event.request.method === 'POST') {
-          let newObj = {};
-          event.respondWith(
+    if (event.request.method === 'POST') {
+        let newObj = {};
+        event.respondWith(
+            event.request.formData().then(formData => {
+
+                for(var pair of formData.entries()) {
+                  var key = pair[0];
+                  var value =  pair[1];
+                  newObj[key] = value;
+                }
             // Try to get the response from the network
-            fetch(event.request.clone()).catch(function() {
-                // If it doesn't work, post a failure message to the client
-                // self.clients.match(thisClient).then(function(client) {
-                //     client.postMessage({
-                //         message: "Post unsuccessful.",
-                //         alert: alert // A string we instantiated earlier
-                //     });
-                // });
-                // Respond with the page that the request originated from
-                return caches.match(event.request.clone().referrer);
+            // fetch(event.request.clone()).catch(function () {
+            //     // If it doesn't work, post a failure message to the client
+            //     self.clients.match(thisClient).then(function (client) {
+            //         client.postMessage({
+            //             message: "Post unsuccessful.",
+            //             alert: alert // A string we instantiated earlier
+            //         });
+            //     });
+                
             })
         );
-      }
-
-    event.respondWith(
-        caches.match(event.request).then(response => {
-            console.log('fetching');
-            return response || fetch(event.request).then(resp => {
-                return caches.open(staticCacheName).then(cache => {
-                    cache.put(event.request, resp.clone());
-                    return resp;
-                });
+        // Respond with the page that the request originated from
+        return caches.match(event.request.clone().referrer);
+    }
+    else {
+        event.respondWith(
+            caches.match(event.request).then(response => {
+                console.log('fetching');
+                return response || fetch(event.request).then(resp => {
+                    return caches.open(staticCacheName).then(cache => {
+                        cache.put(event.request, resp.clone());
+                        return resp;
+                    });
+                })
+                    .catch(() => {
+                        console.log('error in fetching');
+                    });
             })
-            .catch(() => {
-                console.log('error in fetching');
-            });
-        })
-    );
+        );
+    }
 });
 
 self.addEventListener('message', function (event) {
     if (event.data.action === 'skipWaiting') {
         self.skipWaiting();
     }
+
 });
