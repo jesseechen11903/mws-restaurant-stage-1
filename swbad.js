@@ -1,3 +1,5 @@
+import { ClientResponse } from "http";
+
 const staticCacheName = 'restaurant-review-v1';
 const imageCache = 'restaurant-image-v1';
 const mapCache = 'restaurant-map-v1';
@@ -204,70 +206,67 @@ self.addEventListener('fetch', event => {
                 return;
             }
         }
-        let newObj = {};
+
         if (url.pathname === '/reviews/') {
+            // const client = clients.get(event.clientId);
+            // self.clients.matchAll().then(clients => {
+            //     clients.forEach(client => {
+            //         client.postMessage({
+            //             msg: 'Hey about to post'
+            //         })
+            //     })
+            // });
             event.respondWith(
-                // try to get response from the network
-                fetch(event.request.clone())
+                caches.match(event.request).then(response => {
+                    if (response) {
+                        console.log('Found response in cache:', response);
+                        return response;
+                    }
+                // Send a message to the client
+               
+                return fetch(event.request.clone())
                     .then(response => {
-                        console.log('hrllo');
                         if (response.status < 400) {
                             cache.put(event.request, response.clone());
                         }
                         else if (response.status >= 500) {
-                            // event.request.formData().then(formData => {
-                            //     for (var pair of formData.entries()) {
-                            //         var key = pair[0];
-                            //         var value = pair[1];
-                            //         newObj[key] = value;
-                            //     }
-                            // }).then(response => {
-                            //     // check for request
-                            //     getObjectStore(STORE_CACHE, 'readwrite').add({
-                            //         timestamp: Date.now(),
-                            //         restaurant_id: 123,
-                            //         name: 'Jessica',
-                            //         comments: 'Something'
-                            //     })
-                            //     // notify offline
-                            //     let modal = document.getElementById('notification');
-                            //     modal.style.display = 'none';
-                            // });
+                            let newObj = {};
+                            event.request.formData().then(formData => {
+                                for (var pair of formData.entries()) {
+                                    var key = pair[0];
+                                    var value = pair[1];
+                                    newObj[key] = value;
+                                }
+                            }).then(response => {
+                                // check for request
+                                getObjectStore(STORE_CACHE, 'readwrite').add({
+                                    timestamp: Date.now(),
+                                    restaurant_id: 123,
+                                    name: 'Jessica',
+                                    comments: 'Something'
+                                })
+                                // notify offline
+
+                            });
                         }
                         return response;
                     }).catch(error => {
                         console.log(error);
-                        const client = clients.get(event.clientId);
-                        self.clients.matchAll().then(myclients => {
-                            myclients.forEach(client => {
-                                client.postMessage({
-                                    message: "Currently Offline",
-                                    alert: "Offline"
-                                });
-                            });
-                        });
                         return;
                     })
-
+                })
             );
-            // return; // caches.match(event.request.clone().referrer);
+            return;
         }
     }
+
+    // Respond with the page that the request originated from
+    return; // caches.match(event.request.clone().referrer);
 });
 
 self.addEventListener('message', function (event) {
     if (event.data.action === 'skipWaiting') {
         self.skipWaiting();
     }
-    if (event.data.alert) {
-        getObjectStore(STORE_CACHE, 'readwrite').add({
-            timestamp: Date.now(),
-            restaurant_id: 123,
-            name: 'Jessica',
-            comments: 'Something'
-        })
-        // notify offline
-        let modal = document.getElementById('notification');
-        modal.style.display = 'none';
-    }
+
 });
