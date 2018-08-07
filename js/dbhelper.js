@@ -130,6 +130,7 @@ export default class DBHelper {
     fetch(restaurant_url)
       .then(response => response.json())
       .then(response => {
+        
         dbPromise.then(db => {
           const tx = db.transaction('reviews-info', 'readwrite');
           response.map(data => {

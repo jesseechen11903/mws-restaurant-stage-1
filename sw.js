@@ -35,14 +35,15 @@ function openDB() {
         console.log('IndexedDB error:', error);
     };
 
-    cacheDB.onupgradneeded = function () {
+    cacheDB.onupgradeneeded = function (event) {
         console.log('upgrade');
-        this.result.createObjectStore(STORE_CACHE, { keyPath: 'restaurant_id' });
+        let db = event.target.result;
+        db.createObjectStore(STORE_CACHE, { keyPath: 'restaurant_id' });
     };
 
-    cacheDB.onsuccess = function () {
-        console.log('success in indexedDB');
-        idb = this.result;
+    cacheDB.onsuccess = function (event) {
+        console.log('success in indexedDB ' + event);
+        idb = event.target.result;
         // get the replay request
         replayReviewSaved();
     };
@@ -50,7 +51,7 @@ function openDB() {
 
 function getObjectStore(storeName, mode) {
     console.log('getObjectStore');
-    let idb = indexedDB.open('reviewPosts', IDB_VERSION);
+    // let idb = indexedDB.open('reviewPosts', IDB_VERSION);
     return idb.transaction(storeName, mode).objectStore(storeName);
 }
 
@@ -89,7 +90,7 @@ function replayReviewSaved() {
     }
 }
 
-openDB();
+idb = openDB();
 
 self.addEventListener('install', event => {
     console.log('v1 installing...');
