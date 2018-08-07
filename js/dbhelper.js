@@ -28,7 +28,7 @@ export default class DBHelper {
       .then(response => response.json())
       .then((response) => {
         console.log(response);
-        dbPromise = idb.open('restaurants_review');
+        dbPromise = idb.open('restaurants');
         dbPromise.then(db => {
           console.log('read transaction reviews');
           const tx = db.transaction('reviews', 'readwrite');
@@ -37,7 +37,7 @@ export default class DBHelper {
           })
           return tx.complete;
         }).catch(error => {
-          console.log('error');
+          console.log('error ' + error);
         });
       })
       .catch((response) => {
@@ -130,7 +130,7 @@ export default class DBHelper {
     fetch(restaurant_url)
       .then(response => response.json())
       .then(response => {
-        
+
         dbPromise.then(db => {
           const tx = db.transaction('reviews-info', 'readwrite');
           response.map(data => {

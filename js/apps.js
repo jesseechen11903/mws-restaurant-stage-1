@@ -10,10 +10,11 @@ window.updateRestaurants = updateRestaurants;
  * Fetch neighborhoods and cuisines as soon as the page is loaded.
  */
 document.addEventListener('DOMContentLoaded', (event) => {
+    console.log('DOM fully loaded and parsed');
     /* service worker */
     // registerServiceWorker();
     const dbPromise = DBHelper.createDB();
-    const json = DBHelper.fetchRestaurantJson(dbPromise);
+    const json = DBHelper.fetchRestaurantJson();
     console.log('restaurant json ' + json);
     fetchNeighborhoods();
     fetchCuisines();
@@ -35,5 +36,7 @@ window.initMap = () => {
         center: loc,
         scrollwheel: false
     });
+    
+    // console.log('restaurant json ' + json);
     updateRestaurants(self);
 }

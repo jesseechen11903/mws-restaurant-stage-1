@@ -104,7 +104,9 @@ export const updateRestaurants = (gmap) => {
     nSelector.setAttribute('aria-activedecendant', nSelect[nIndex].id);
     nSelect[nIndex].setAttribute('class', 'focused');
   }
-
+console.log('this is call');
+  const dbPromise = DBHelper.createDB();
+  DBHelper.fetchRestaurantJson(dbPromise);
   DBHelper.fetchRestaurantByCuisineAndNeighborhood(cuisine, neighborhood, (error, restaurants) => {
     if (error) { // Got an error!
       console.error(error);
