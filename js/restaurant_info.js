@@ -114,8 +114,9 @@ export const fillRestaurantHoursHTML = (operatingHours = self.restaurant.operati
 export const fillReviewsHTML = (reviews = self.reviews) => {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
+  const restId = reviews ? reviews[0].restaurant_id : '';
   // title.innerHTML = 'Reviews' +  '<a role="option" href="#" class="updateReview" onclick="document.getElementById(\'submission\').style.display=\'block\'">New</a>';
-  title.innerHTML = 'Reviews' + '<button type="submit" id="createReview" class="iconbtn" onclick="updateReviewModal(\'reset\')">New</button>'
+  title.innerHTML = 'Reviews' + `<button type="submit" id="createReview" class="iconbtn" onclick="updateReviewModal(\'reset\', ${restId})">New</button>`
   container.appendChild(title);
 
   if (!reviews) {
@@ -126,6 +127,7 @@ export const fillReviewsHTML = (reviews = self.reviews) => {
   }
 
   const ul = document.getElementById('reviews-list');
+ 
   reviews.forEach((review) => {
     ul.appendChild(createReviewHTML(review));
   });
@@ -209,10 +211,10 @@ export const displayOfflineMsg = (review) => {
 }
 
 /* update review modal field values */
-export const updateReviewModal = (review = self.reviews) => {
+export const updateReviewModal = (review = self.reviews, restaurant_id) => {
   document.getElementById('submission').style.display = 'block';
   document.getElementById('createReview').style.display = 'none';
-  document.getElementById('restid').value = review.restaurant_id;
+  document.getElementById('restid').value = restaurant_id;
   if (review === 'reset') {
     document.getElementById('reviewid').value = '';
     document.getElementById('reviewername').value = '';

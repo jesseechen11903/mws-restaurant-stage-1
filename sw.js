@@ -207,11 +207,14 @@ self.addEventListener('fetch', event => {
         let newObj = {};
         if (url.pathname === '/reviews/') {
             const clientId = clients.get(event.clientId);
-            self.clients.get(clientId).then(client => {
+            self.clients.matchAll().then(myclients => {
+                myclients.forEach(client => {
+                    console.log(client);
                     client.postMessage({
                         message: "Currently Offline",
                         alert: "Offline"
                     });
+                });
             });
             event.respondWith(function() {
                 // try to get response from the network
