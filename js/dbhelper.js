@@ -164,21 +164,22 @@ export default class DBHelper {
       .then(response => response.json())
       .then((response) => {
         console.log(response);
-        callback(null, response);
+        
         // store
         const dbPromise = idb.open('restaurants_review');
         dbPromise.then(db => {
           const tx = db.transaction('reviews-info', 'readwrite');
-          response.map(data => {
+          // response.map(data => {
             console.log('help emmemememememe');
-            tx.objectStore('reviews-info').put(data);
-          })
+            tx.objectStore('reviews-info').put(response);
+          //})
           return tx.complete;
         })
         .catch((response) => {
             console.log('error here' + response);
             // DOMEXception here
         });
+        callback(null, response);
       })
       .catch((response) => {
         const error = (`Request failed. Returned status of ${response.status}`);

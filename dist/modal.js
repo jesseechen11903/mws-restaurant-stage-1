@@ -94,7 +94,7 @@
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-eval("\n\n/* offline notification handler */\nwindow.addEventListener('load', function () {\n    function handleNetworkChange(event) {\n        var modal = document.getElementById('notification');\n\n        if (navigator.onLine) {\n            modal.style.display = 'none';\n        } else {\n            modal.style.display = 'block';\n        }\n    }\n\n    window.addEventListener('online', handleNetworkChange);\n    window.addEventListener('offline', handleNetworkChange);\n});\n\n// When the user clicks anywhere outside of the modal, close it\n\ndocument.getElementById('notification').onclick = function (event) {\n    if (event.target.tagName == 'A') {\n        document.getElementById('notification').style.display = \"none\";\n    }\n};\n\n//# sourceURL=webpack:///./js/modal.js?");
+eval("\n\n/* offline notification handler */\n// window.addEventListener('load', () => {\n//     function handleNetworkChange(event) {\n//         let modal = document.getElementById('notification');\n\n//         if (navigator.onLine) {\n//             modal.style.display = 'none';\n//         } else {\n//             modal.style.display = 'block';\n//         }\n//     }\n\n//     window.addEventListener('online', handleNetworkChange);\n//     window.addEventListener('offline', handleNetworkChange);\n// });\n\n// When the user clicks anywhere outside of the modal, close it\n\ndocument.getElementById('notification').onclick = function (event) {\n    if (event.target.tagName == 'A') {\n        document.getElementById('notification').style.display = \"none\";\n    }\n};\n\n//# sourceURL=webpack:///./js/modal.js?");
 
 /***/ })
 

@@ -206,7 +206,14 @@ self.addEventListener('fetch', event => {
         }
         let newObj = {};
         if (url.pathname === '/reviews/') {
-            event.respondWith(
+            const clientId = clients.get(event.clientId);
+            self.clients.get(clientId).then(client => {
+                    client.postMessage({
+                        message: "Currently Offline",
+                        alert: "Offline"
+                    });
+            });
+            event.respondWith(function() {
                 // try to get response from the network
                 fetch(event.request.clone())
                     .then(response => {
@@ -237,7 +244,6 @@ self.addEventListener('fetch', event => {
                         return response;
                     }).catch(error => {
                         console.log(error);
-                        const client = clients.get(event.clientId);
                         self.clients.matchAll().then(myclients => {
                             myclients.forEach(client => {
                                 client.postMessage({
@@ -248,7 +254,7 @@ self.addEventListener('fetch', event => {
                         });
                         return;
                     })
-
+                }
             );
             // return; // caches.match(event.request.clone().referrer);
         }
@@ -260,6 +266,7 @@ self.addEventListener('message', function (event) {
         self.skipWaiting();
     }
     if (event.data.alert) {
+        alert(event.data.alert);
         getObjectStore(STORE_CACHE, 'readwrite').add({
             timestamp: Date.now(),
             restaurant_id: 123,

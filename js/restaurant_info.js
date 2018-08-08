@@ -195,7 +195,9 @@ export const updateReview = () => {
   review.restaurant_id = document.getElementById('restid').value;
   // store the data
   DBHelper.postReviewData(review, (error) => {
-    displayOfflineMsg(review);
+    console.log(review);
+    console.log(error);
+    // displayOfflineMsg(review);
   });
 }
 
