@@ -199,8 +199,14 @@ export default class DBHelper {
     value.name = review.name;
     value.rating = review.rating;
     value.comments = review.comments;
+    value.restaurant_id = review.restaurant_id;
     fetch(restaurant_url, {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
       method: 'post',
+      mode: 'no-cors',
       body: value
     }).then(response => {
       console.log('update ' + response);

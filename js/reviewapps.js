@@ -1,9 +1,10 @@
-import {fetchRestaurantFromURL, fillBreadcrumb, retrieveReviewById, updateReview, updateReviewModal} from './restaurant_info.js';
+import {fetchRestaurantFromURL, fillBreadcrumb, retrieveReviewById, updateReview, updateReviewModal, displayOfflineMsg} from './restaurant_info.js';
 import DBHelper from './dbhelper.js';
 
 window.retrieveReviewById = retrieveReviewById;
 window.updateReview = updateReview;
 window.updateReviewModal = updateReviewModal;
+window.displayOfflineMsg = displayOfflineMsg;
 
 /**
  * Initialize Google map, called from HTML.
@@ -23,3 +24,7 @@ window.initMap = () => {
       }
     });
   }
+
+  navigator.serviceWorker.addEventListener('message', function(event) {
+    displayOfflineMsg(event.data.alert);
+  })

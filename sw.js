@@ -71,7 +71,7 @@ function replayReviewSaved() {
                     console.log('data is too old');
                 } else {
                     const review_url = `http://localhost:1337/reviews/`;
-                    fetch(review_url, {
+                    return fetch(review_url, {
                         method: 'post',
                         body: req
                     }).then(response => {
@@ -206,17 +206,16 @@ self.addEventListener('fetch', event => {
         }
         let newObj = {};
         if (url.pathname === '/reviews/') {
-            const clientId = clients.get(event.clientId);
-            self.clients.matchAll().then(myclients => {
-                myclients.forEach(client => {
-                    console.log(client);
-                    client.postMessage({
-                        message: "Currently Offline",
-                        alert: "Offline"
-                    });
-                });
+            event.request.formData().then(formData => {
+                for (var pair of formData.entries()) {
+                    var key = pair[0];
+                    var value = pair[1];
+                    newObj[key] = value;
+                }
+                console.log('after formdata' + newObj);
             });
-            event.respondWith(function() {
+            // event.respondWith(function() {
+            event.waitUntil(async function () {
                 // try to get response from the network
                 fetch(event.request.clone())
                     .then(response => {
@@ -225,24 +224,24 @@ self.addEventListener('fetch', event => {
                             cache.put(event.request, response.clone());
                         }
                         else if (response.status >= 500) {
-                            // event.request.formData().then(formData => {
-                            //     for (var pair of formData.entries()) {
-                            //         var key = pair[0];
-                            //         var value = pair[1];
-                            //         newObj[key] = value;
-                            //     }
-                            // }).then(response => {
-                            //     // check for request
-                            //     getObjectStore(STORE_CACHE, 'readwrite').add({
-                            //         timestamp: Date.now(),
-                            //         restaurant_id: 123,
-                            //         name: 'Jessica',
-                            //         comments: 'Something'
-                            //     })
-                            //     // notify offline
-                            //     let modal = document.getElementById('notification');
-                            //     modal.style.display = 'none';
-                            // });
+                            const clientId = clients.get(event.clientId);
+                            self.clients.matchAll().then(myclients => {
+                                myclients.forEach(client => {
+                                    console.log(client);
+                                    client.postMessage({
+                                        message: "Currently Offline",
+                                        alert: "You are currently offline, your data will defer saving. It will automatically save when you are back online"
+                                    });
+                                });
+                            });
+
+                            getObjectStore(STORE_CACHE, 'readwrite').add({
+                                timestamp: Date.now(),
+                                restaurant_id: newObj.restaurant_id,
+                                name: newObj.name,
+                                rating: newObj.rating,
+                                comments: newObj.comments
+                            })
                         }
                         return response;
                     }).catch(error => {
@@ -257,7 +256,7 @@ self.addEventListener('fetch', event => {
                         });
                         return;
                     })
-                }
+            }
             );
             // return; // caches.match(event.request.clone().referrer);
         }
@@ -268,16 +267,10 @@ self.addEventListener('message', function (event) {
     if (event.data.action === 'skipWaiting') {
         self.skipWaiting();
     }
-    if (event.data.alert) {
-        alert(event.data.alert);
-        getObjectStore(STORE_CACHE, 'readwrite').add({
-            timestamp: Date.now(),
-            restaurant_id: 123,
-            name: 'Jessica',
-            comments: 'Something'
-        })
-        // notify offline
-        let modal = document.getElementById('notification');
-        modal.style.display = 'none';
-    }
 });
+
+self.addEventListener('sync', function(event) {
+    if (event.tag === 'reviewSync') {
+        event.awaitUntil(replayReviewSaved());
+    }
+})

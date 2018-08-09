@@ -206,8 +206,9 @@ export const updateReview = () => {
 export const displayOfflineMsg = (review) => {
   let modal = document.getElementById('notification');
 
+  alert(review);
   modal.style.display = 'none';
-  localStorage.setItem('newPost', review);
+  // localStorage.setItem('newPost', review);
 }
 
 /* update review modal field values */

@@ -247,7 +247,7 @@ nav h1 a {
 
 .modal {
   overflow: auto;   /* Enable scroll if needed */
-  z-index: 2;
+  z-index: 5;
 }
 
 .review-content {
