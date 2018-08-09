@@ -1,18 +1,18 @@
 /* offline notification handler */
-// window.addEventListener('load', () => {
-//     function handleNetworkChange(event) {
-//         let modal = document.getElementById('notification');
+window.addEventListener('load', () => {
+    function handleNetworkChange(event) {
+        let modal = document.getElementById('notification');
 
-//         if (navigator.onLine) {
-//             modal.style.display = 'none';
-//         } else {
-//             modal.style.display = 'block';
-//         }
-//     }
+        if (navigator.onLine) {
+            modal.style.display = 'none';
+        } else {
+            modal.style.display = 'block';
+        }
+    }
 
-//     window.addEventListener('online', handleNetworkChange);
-//     window.addEventListener('offline', handleNetworkChange);
-// });
+    window.addEventListener('online', handleNetworkChange);
+    window.addEventListener('offline', handleNetworkChange);
+});
 
 // When the user clicks anywhere outside of the modal, close it
 

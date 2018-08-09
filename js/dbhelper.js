@@ -80,11 +80,11 @@ export default class DBHelper {
     console.log('open db');
     const dbpromise = idb.open('restaurants', 1)
     dbpromise.then(db => {
-        let tx = db.transaction('reviews', 'readonly');
-        let store = tx.objectStore('reviews');
-        console.log('get from object store');
-        return index ? store.get(index) : store.getAll();
-      })
+      let tx = db.transaction('reviews', 'readonly');
+      let store = tx.objectStore('reviews');
+      console.log('get from object store');
+      return index ? store.get(index) : store.getAll();
+    })
       .then(() => {
         console.log('reading from indexeddb');
         callback(null, response);
@@ -138,9 +138,9 @@ export default class DBHelper {
           })
           return tx.complete;
         })
-        .catch(error => {
-          console.log('failed to store ' + error.message);
-        });
+          .catch(error => {
+            console.log('failed to store ' + error.message);
+          });
         callback(null, response);
       })
       .catch((error) => {
@@ -164,21 +164,21 @@ export default class DBHelper {
       .then(response => response.json())
       .then((response) => {
         console.log(response);
-        
+
         // store
         const dbPromise = idb.open('restaurants_review');
         dbPromise.then(db => {
           const tx = db.transaction('reviews-info', 'readwrite');
           // response.map(data => {
-            console.log('help emmemememememe');
-            tx.objectStore('reviews-info').put(response);
+          console.log('help emmemememememe');
+          tx.objectStore('reviews-info').put(response);
           //})
           return tx.complete;
         })
-        .catch((response) => {
+          .catch((response) => {
             console.log('error here' + response);
             // DOMEXception here
-        });
+          });
         callback(null, response);
       })
       .catch((response) => {
@@ -191,7 +191,7 @@ export default class DBHelper {
   /* post the review data */
   static postReviewData(review, callback) {
     let restaurant_url = `${DBHelper.DATABASE_URL}/reviews/`;
-    
+
     if (review && review.review_id) {
       restaurant_url = restaurant_url.concat(`${review.review_id}`);
     }
@@ -200,6 +200,21 @@ export default class DBHelper {
     value.rating = review.rating;
     value.comments = review.comments;
     value.restaurant_id = review.restaurant_id;
+
+    // store locally
+    const dbPromise = idb.open('restaurants_review');
+    if (!review.review_id) {
+      dbPromise.then(db => {
+        const tx = db.transaction('reviews-info', 'readwrite');
+        console.log('store local');
+        tx.objectStore('reviews-info').put(value);
+        return tx.complete;
+      })
+        .catch((response) => {
+          console.log('error here' + response);
+          // DOMEXception here
+        });
+    }
     fetch(restaurant_url, {
       headers: {
         'Accept': 'application/json',
@@ -369,8 +384,8 @@ export default class DBHelper {
           store.createIndex('neighborhood', 'neighborhood');
           store.createIndex('cuisine_type', 'cuisine_type');
           store.createIndex('id', 'id');
-          // let review = upgradeDB.transaction.objectStore('reviews-info');
-          // store.createIndex('id, restaurant_id', ['id', 'restaurant_id']);
+        // let review = upgradeDB.transaction.objectStore('reviews-info');
+        // store.createIndex('id, restaurant_id', ['id', 'restaurant_id']);
       }
     });
   }
