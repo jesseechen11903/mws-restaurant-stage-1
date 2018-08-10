@@ -192,14 +192,15 @@ export default class DBHelper {
   static postReviewData(review, callback) {
     let restaurant_url = `${DBHelper.DATABASE_URL}/reviews/`;
 
-    if (review && review.review_id) {
+    if (review && review.review_id && review.review_id !== '') {
       restaurant_url = restaurant_url.concat(`${review.review_id}`);
     }
     let value = {};
     value.name = review.name;
-    value.rating = review.rating;
+    value.rating = parseInt(review.rating);
     value.comments = review.comments;
-    value.restaurant_id = review.restaurant_id;
+    value.restaurant_id = parseInt(review.restaurant_id);
+    console.log(JSON.stringify(value));
 
     // store locally
     const dbPromise = idb.open('restaurants_review');
@@ -222,7 +223,7 @@ export default class DBHelper {
       },
       method: 'post',
       mode: 'no-cors',
-      body: value
+      body: JSON.stringify(value)
     }).then(response => {
       console.log('update ' + response);
       return response.json();
