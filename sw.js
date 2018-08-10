@@ -213,7 +213,7 @@ self.addEventListener('fetch', event => {
                         console.log('hrllo');
                         return response.json();
                     }).then(data => {
-                        alert(JSON.stringify(data));
+                        console.log(data);
                     }).catch(error => {
                         console.log(error);
                         self.clients.matchAll().then(myclients => {
