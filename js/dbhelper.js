@@ -203,7 +203,7 @@ export default class DBHelper {
 
     // store locally
     const dbPromise = idb.open('restaurants_review');
-    if (!review.review_id) {
+    // if (!review.review_id) {
       dbPromise.then(db => {
         const tx = db.transaction('reviews-info', 'readwrite');
         console.log('store local');
@@ -214,7 +214,7 @@ export default class DBHelper {
           console.log('error here' + response);
           // DOMEXception here
         });
-    }
+    // }
     fetch(restaurant_url, {
       headers: {
         'Accept': 'application/json',

@@ -51,7 +51,6 @@ function openDB() {
 
 function getObjectStore(storeName, mode) {
     console.log('getObjectStore');
-    // let idb = indexedDB.open('reviewPosts', IDB_VERSION);
     return idb.transaction(storeName, mode).objectStore(storeName);
 }
 
@@ -180,6 +179,7 @@ self.addEventListener('fetch', event => {
             // Handle Maps API requests in a generic fashion,
             // by returning a Promise that resolves to a Response.
         );
+        return;
     }
     if (event.request.method === 'GET') {
         event.respondWith(
@@ -206,57 +206,27 @@ self.addEventListener('fetch', event => {
         }
         let newObj = {};
         if (url.pathname === '/reviews/') {
-            event.request.formData().then(formData => {
-                for (var pair of formData.entries()) {
-                    var key = pair[0];
-                    var value = pair[1];
-                    newObj[key] = value;
-                }
-                console.log('after formdata' + newObj);
-            });
-            // event.respondWith(function() {
-            event.waitUntil(async function () {
+            event.respondWith(
                 // try to get response from the network
                 fetch(event.request.clone())
                     .then(response => {
                         console.log('hrllo');
-                        if (response.status < 400) {
-                            cache.put(event.request, response.clone());
-                        }
-                        else if (response.status >= 500) {
-                            const clientId = clients.get(event.clientId);
-                            self.clients.matchAll().then(myclients => {
-                                myclients.forEach(client => {
-                                    console.log(client);
-                                    client.postMessage({
-                                        message: "Currently Offline",
-                                        alert: "You are currently offline, your data will defer saving. It will automatically save when you are back online"
-                                    });
-                                });
-                            });
-
-                            getObjectStore(STORE_CACHE, 'readwrite').add({
-                                timestamp: Date.now(),
-                                restaurant_id: newObj.restaurant_id,
-                                name: newObj.name,
-                                rating: newObj.rating,
-                                comments: newObj.comments
-                            })
-                        }
-                        return response;
+                        return response.json();
+                    }).then(data => {
+                        alert(JSON.stringify(data));
                     }).catch(error => {
                         console.log(error);
                         self.clients.matchAll().then(myclients => {
                             myclients.forEach(client => {
                                 client.postMessage({
-                                    message: "Currently Offline",
+                                    message: "You are currently offline, you data will be defer saving when you are reconnected",
+                                    review: newObj,
                                     alert: "Offline"
                                 });
                             });
                         });
                         return;
                     })
-            }
             );
             // return; // caches.match(event.request.clone().referrer);
         }

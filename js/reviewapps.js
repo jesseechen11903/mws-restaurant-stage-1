@@ -26,5 +26,5 @@ window.initMap = () => {
   }
 
   navigator.serviceWorker.addEventListener('message', function(event) {
-    displayOfflineMsg(event.data.alert);
+    displayOfflineMsg(event.data.message, event.data.review);
   })

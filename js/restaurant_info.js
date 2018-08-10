@@ -203,12 +203,18 @@ export const updateReview = () => {
   });
 }
 
-export const displayOfflineMsg = (review) => {
+export const displayOfflineMsg = (message, review) => {
   let modal = document.getElementById('notification');
 
-  alert(review);
+  alert(message);
   modal.style.display = 'none';
-  // localStorage.setItem('newPost', review);
+  getObjectStore(STORE_CACHE, 'readwrite').add({
+    timestamp: Date.now(),
+    restaurant_id: review.restaurant_id,
+    name: review.name,
+    rating: review.rating,
+    comments: review.comments
+  });
 }
 
 /* update review modal field values */
