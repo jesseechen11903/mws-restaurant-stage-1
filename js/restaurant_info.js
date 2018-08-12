@@ -207,14 +207,22 @@ export const displayOfflineMsg = (message, review) => {
   let modal = document.getElementById('notification');
 
   alert(message);
-  modal.style.display = 'none';
-  getObjectStore(STORE_CACHE, 'readwrite').add({
-    timestamp: Date.now(),
-    restaurant_id: review.restaurant_id,
-    name: review.name,
-    rating: review.rating,
-    comments: review.comments
-  });
+  // modal.style.display = 'none';
+  let newPost = document.getElementById('submission');
+  review.review_id = document.getElementById('reviewid').value;
+  review.name = document.getElementById('reviewername').value;
+  review.comments = document.getElementById('comment').value;
+  review.rating = document.getElementById('rating').value;
+  review.restaurant_id = document.getElementById('restid').value;
+  console.log('wth ' + review);
+  localStorage.setItem('newReview', review);
+  // getObjectStore(STORE_CACHE, 'readwrite').add({
+  //   timestamp: Date.now(),
+  //   restaurant_id: review.restaurant_id,
+  //   name: review.name,
+  //   rating: review.rating,
+  //   comments: review.comments
+  // });
 }
 
 /* update review modal field values */
