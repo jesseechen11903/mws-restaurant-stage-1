@@ -33,7 +33,7 @@ navigator.serviceWorker.addEventListener('message', function (event) {
 
 window.addEventListener('load', function (event) {
   if (localStorage.getItem('newReview')) {
-    let review = localStorage.getItem('newReview').split(',');
+    let review = JSON.parse(localStorage.getItem('newReview'));
     localStorage.removeItem('newReview');
     DBHelper.postReviewData(review, (error) => {
       console.log(review);

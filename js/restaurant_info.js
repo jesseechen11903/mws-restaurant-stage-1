@@ -215,7 +215,7 @@ export const displayOfflineMsg = (message, review) => {
   review.rating = document.getElementById('rating').value;
   review.restaurant_id = document.getElementById('restid').value;
   console.log('wth ' + review);
-  localStorage.setItem('newReview', review);
+  localStorage.setItem('newReview', JSON.stringify(review));
   // getObjectStore(STORE_CACHE, 'readwrite').add({
   //   timestamp: Date.now(),
   //   restaurant_id: review.restaurant_id,
