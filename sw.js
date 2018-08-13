@@ -210,10 +210,10 @@ self.addEventListener('fetch', event => {
                 // try to get response from the network
                 fetch(event.request.clone())
                     .then(response => {
-                        console.log('hrllo');
-                        return response.json();
-                    }).then(data => {
-                        console.log(data);
+                        console.log('hrllo ' + response);
+                        // return response.json();
+                    // }).then(data => {
+                    //     console.log(data);
                     }).catch(error => {
                         console.log(error);
                         self.clients.matchAll().then(myclients => {

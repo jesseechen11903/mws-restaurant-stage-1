@@ -219,10 +219,13 @@ export default class DBHelper {
     fetch(restaurant_url, {
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json; charset=utf-8'
       },
       method: 'post',
+      redirect: 'follow',
+      referrer: 'no-referrer',
       mode: 'no-cors',
+      cache: 'no-cache',
       body: JSON.stringify(value)
     }).then(response => {
       console.log('update ' + response);
