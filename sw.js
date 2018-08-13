@@ -206,29 +206,30 @@ self.addEventListener('fetch', event => {
         }
         let newObj = {};
         if (url.pathname === '/reviews/') {
+            let clientId = event.clientId;
             event.respondWith(
                 // try to get response from the network
                 fetch(event.request.clone())
                     .then(response => {
                         console.log('hrllo ' + response);
-                        // return response.json();
+                    //     return response.json();
                     // }).then(data => {
                     //     console.log(data);
                     }).catch(error => {
-                        console.log(error);
-                        self.clients.matchAll().then(myclients => {
-                            myclients.forEach(client => {
+                        console.log(`${error} with ${clientId}`);
+                        //self.clients.matchAll().then(myclients => {
+                            self.clients.get(clientId).then(client => {
+                            // myclients.forEach(client => { 
                                 client.postMessage({
                                     message: "You are currently offline, you data will be defer saving when you are reconnected",
                                     review: newObj,
                                     alert: "Offline"
                                 });
-                            });
+                           // });
                         });
                         return;
                     })
             );
-            // return; // caches.match(event.request.clone().referrer);
         }
     }
 });

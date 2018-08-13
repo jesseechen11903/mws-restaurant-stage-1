@@ -207,6 +207,7 @@ export const displayOfflineMsg = (message, review) => {
   let modal = document.getElementById('notification');
 
   alert(message);
+  // console.log('displayOfflineMsg ' + JSON.parse(review));
   // modal.style.display = 'none';
   let newPost = document.getElementById('submission');
   review.review_id = document.getElementById('reviewid').value;

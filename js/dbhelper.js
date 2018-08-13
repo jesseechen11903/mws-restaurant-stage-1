@@ -200,6 +200,9 @@ export default class DBHelper {
     value.rating = parseInt(review.rating);
     value.comments = review.comments;
     value.restaurant_id = parseInt(review.restaurant_id);
+    // let data = new FormData();
+    // data.append('json', JSON.stringify(value));
+    let data = JSON.stringify(value);
     console.log(JSON.stringify(value));
 
     // store locally
@@ -226,7 +229,7 @@ export default class DBHelper {
       referrer: 'no-referrer',
       mode: 'no-cors',
       cache: 'no-cache',
-      body: JSON.stringify(value)
+      body: data
     }).then(response => {
       console.log('update ' + response);
       return response.json();
