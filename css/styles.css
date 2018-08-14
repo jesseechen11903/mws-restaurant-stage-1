@@ -254,10 +254,16 @@ nav h1 a {
   z-index: 1;
 }
 
+.ui-content {
+  margin: 15% auto; /* 15% from the top and centered */
+}
+
+.modal-content {
+  margin: 5% auto; /* 15% from the top and centered */
+}
 /* Modal Content/Box */
 .modal-content, .ui-content {
   background-color: #fefefe;
-  margin: 15% auto; /* 15% from the top and centered */
   padding: 20px;
   border: 1px solid #888;
 }

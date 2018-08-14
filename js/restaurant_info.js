@@ -193,8 +193,8 @@ export const updateReview = () => {
   review.review_id = document.getElementById('reviewid').value;
   review.name = document.getElementById('reviewername').value;
   review.comments = document.getElementById('comment').value;
-  review.rating = document.getElementById('rating').value;
-  review.restaurant_id = document.getElementById('restid').value;
+  review.rating = parseInt(document.getElementById('rating').value);
+  review.restaurant_id = parseInt(document.getElementById('restid').value);
   // store the data
   DBHelper.postReviewData(review, (error) => {
     console.log(review);
@@ -213,8 +213,8 @@ export const displayOfflineMsg = (message, review) => {
   review.review_id = document.getElementById('reviewid').value;
   review.name = document.getElementById('reviewername').value;
   review.comments = document.getElementById('comment').value;
-  review.rating = document.getElementById('rating').value;
-  review.restaurant_id = document.getElementById('restid').value;
+  review.rating = parseInt(document.getElementById('rating').value);
+  review.restaurant_id = parseInt(document.getElementById('restid').value);
   console.log('wth ' + review);
   localStorage.setItem('newReview', JSON.stringify(review));
   // getObjectStore(STORE_CACHE, 'readwrite').add({
