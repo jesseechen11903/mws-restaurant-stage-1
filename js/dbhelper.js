@@ -200,14 +200,12 @@ export default class DBHelper {
     value.rating = parseInt(review.rating);
     value.comments = review.comments;
     value.restaurant_id = parseInt(review.restaurant_id);
-    // let data = new FormData();
-    // data.append('json', JSON.stringify(value));
+    
     let data = JSON.stringify(value);
     console.log(JSON.stringify(value));
 
     // store locally
     const dbPromise = idb.open('restaurants_review');
-    // if (!review.review_id) {
       dbPromise.then(db => {
         const tx = db.transaction('reviews-info', 'readwrite');
         console.log('store local');
@@ -237,7 +235,6 @@ export default class DBHelper {
       console.log('data saved');
     }).catch(response => {
       let msg = 'Currently offline data will be save later';
-      // navigator.serviceWorker.controller.postMessage(`Client 1 says ${msg}`);
       callback(null, review);
     })
   }
@@ -381,18 +378,12 @@ export default class DBHelper {
               keyPath: 'id',
               autoIncrement: true
             });
-            // let review = upgradeDB.createObjectStore('reviews-info', {
-            //   keyPath: ['id', 'restaurant_id'],
-            //   autoIncrement: true
-            // })
           }
         case 1:
           let store = upgradeDB.transaction.objectStore('reviews');
           store.createIndex('neighborhood', 'neighborhood');
           store.createIndex('cuisine_type', 'cuisine_type');
           store.createIndex('id', 'id');
-        // let review = upgradeDB.transaction.objectStore('reviews-info');
-        // store.createIndex('id, restaurant_id', ['id', 'restaurant_id']);
       }
     });
   }

@@ -115,7 +115,6 @@ export const fillReviewsHTML = (reviews = self.reviews) => {
   const container = document.getElementById('reviews-container');
   const title = document.createElement('h2');
   const restId = reviews ? reviews[0].restaurant_id : '';
-  // title.innerHTML = 'Reviews' +  '<a role="option" href="#" class="updateReview" onclick="document.getElementById(\'submission\').style.display=\'block\'">New</a>';
   title.innerHTML = 'Reviews' + `<button type="submit" id="createReview" class="iconbtn" onclick="updateReviewModal(\'reset\', ${restId})">New</button>`
   container.appendChild(title);
 
@@ -144,17 +143,8 @@ export const createReviewHTML = (review) => {
   const name = document.createElement('p');
   const reviewId = review.id;
   const restaurantId = review.restaurant_id;
-  // name.innerHTML = `${review.name} <a role="option" href="#" class="updateReview" onclick="retrieveReviewById(${reviewId})">Update</a>`;
   name.innerHTML = `${review.name} <button class="iconbtn" onclick="retrieveReviewById(${reviewId})">Edit</button>`;
   li.appendChild(name);
-
-  /* const date = document.createElement('p');
-  date.innerHTML = review.createdAt;
-  li.appendChild(date);
-
-  const updateDate = document.createElement('p');
-  updateDate.innerHTML = review.updatedAt;
-  li.appendChild(updateDate); */
 
   const rating = document.createElement('p');
   rating.innerHTML = `Rating: ${review.rating}`;
@@ -164,7 +154,6 @@ export const createReviewHTML = (review) => {
   comments.innerHTML = review.comments;
   li.appendChild(comments);
 
-  // updateReviewModal(review,);
   return li;
 }
 
@@ -199,7 +188,6 @@ export const updateReview = () => {
   DBHelper.postReviewData(review, (error) => {
     console.log(review);
     console.log(error);
-    // displayOfflineMsg(review);
   });
 }
 
@@ -217,13 +205,6 @@ export const displayOfflineMsg = (message, review) => {
   review.restaurant_id = parseInt(document.getElementById('restid').value);
   console.log('wth ' + review);
   localStorage.setItem('newReview', JSON.stringify(review));
-  // getObjectStore(STORE_CACHE, 'readwrite').add({
-  //   timestamp: Date.now(),
-  //   restaurant_id: review.restaurant_id,
-  //   name: review.name,
-  //   rating: review.rating,
-  //   comments: review.comments
-  // });
 }
 
 /* update review modal field values */

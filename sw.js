@@ -212,20 +212,14 @@ self.addEventListener('fetch', event => {
                 fetch(event.request.clone())
                     .then(response => {
                         console.log('hrllo ' + response);
-                    //     return response.json();
-                    // }).then(data => {
-                    //     console.log(data);
                     }).catch(error => {
                         console.log(`${error} with ${clientId}`);
-                        //self.clients.matchAll().then(myclients => {
                             self.clients.get(clientId).then(client => {
-                            // myclients.forEach(client => { 
                                 client.postMessage({
                                     message: "You are currently offline, you data will be defer saving when you are reconnected",
                                     review: newObj,
                                     alert: "Offline"
                                 });
-                           // });
                         });
                         return;
                     })
