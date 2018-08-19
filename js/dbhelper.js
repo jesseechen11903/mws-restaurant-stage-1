@@ -200,22 +200,22 @@ export default class DBHelper {
     value.rating = parseInt(review.rating);
     value.comments = review.comments;
     value.restaurant_id = parseInt(review.restaurant_id);
-    
+
     let data = JSON.stringify(value);
     console.log(JSON.stringify(value));
 
     // store locally
     const dbPromise = idb.open('restaurants_review');
-      dbPromise.then(db => {
-        const tx = db.transaction('reviews-info', 'readwrite');
-        console.log('store local');
-        tx.objectStore('reviews-info').put(value);
-        return tx.complete;
-      })
-        .catch((response) => {
-          console.log('error here' + response);
-          // DOMEXception here
-        });
+    dbPromise.then(db => {
+      const tx = db.transaction('reviews-info', 'readwrite');
+      console.log('store local');
+      tx.objectStore('reviews-info').put(value);
+      return tx.complete;
+    })
+      .catch((response) => {
+        console.log('error here' + response);
+        // DOMEXception here
+      });
     // }
     fetch(restaurant_url, {
       headers: {
@@ -240,10 +240,25 @@ export default class DBHelper {
   }
 
   /* put the review data */
-  static favoriteRestaurant(id, isfavorite = true, callback) {
-    let param = isfavorite ? true : false;
-    let restaurant_url = `${DBHelper.DATABASE_URL}/restaurants/${id}/?is_favorite=${param}`;
+  static favoriteRestaurant(restaurant, callback) {
+    let restaurant_url = `${DBHelper.DATABASE_URL}/restaurants/${restaurant.id}/?is_favorite=${restaurant.is_favorite}`;
     // update the local data
+
+    // store locally
+    const dbpromise = idb.open('restaurants', 1)
+    dbpromise.then(db => {
+      let tx = db.transaction('reviews', 'readwrite');
+      let store = tx.objectStore('reviews');
+      console.log('get from object store');
+      return store.put(restaurant);
+    })
+      .then(() => {
+        console.log('reading from indexeddb');
+      })
+      .catch((error) => {
+        console.log(`store to indexdb ${error.message}`);
+      });
+
     return fetch(restaurant_url, {
       headers: {
         'Accept': 'application/json',

@@ -23,6 +23,24 @@ In a terminal, check the version of Python you have: `python -V`. If you have Py
 ### Note about ES6
 
 Most of the code in this project has been written to the ES6 JavaScript specification for compatibility with modern web browsers and future proofing JavaScript code. As much as possible, try to maintain use of ES6 in any additional JavaScript you write. 
+ #####################
 
+Student Notes
 
+Installation
+To build the modified codes
+npm install
+
+Build
+Development mode
+node run dev
+
+Production mode
+node run build
+
+Test
+Fork to the stage repository https://github.com/udacity/mws-restaurant-stage-3, run 
+node server
+
+Either serve up the page using Chrome Webserver or Apache web server
 

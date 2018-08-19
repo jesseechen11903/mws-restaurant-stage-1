@@ -202,17 +202,19 @@ export const updateReview = () => {
 export const putFavorite = (isfavorite = true) => {
   console.log('put favorite');
   // if goes offline store to localStorage
-  
+  let restaurant = self.restaurant;
   const id = getParameterByName('id');
   const favorite = document.getElementById('restaurant-favorite');
   if (isfavorite) {
     favorite.innerHTML = '&#10084;';
+    restaurant.is_favorite = false;
   } else {
     favorite.innerHTML = '&#10085;';
+    restaurant.is_favorite = true;
   }
   
   // store the data
-  DBHelper.favoriteRestaurant(id, isfavorite, (error) => {
+  DBHelper.favoriteRestaurant(restaurant, (error) => {
     console.log(id);
     console.log(error);
   });
