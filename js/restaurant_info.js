@@ -44,6 +44,13 @@ export const fillRestaurantHTML = (restaurant = self.restaurant) => {
   const name = document.getElementById('restaurant-name');
   name.innerHTML = restaurant.name;
 
+  if (restaurant.is_favorite) {
+      const favorite = document.getElementById('restaurant-favorite');
+      favorite.innerHTML = '&#10084;';
+      const favoriteClick = document.getElementById('restaurant-favorite');
+      favoriteClick.setAttribute('onclick', 'putFavorite(false);');
+  }
+  
   const address = document.getElementById('restaurant-address');
   address.innerHTML = restaurant.address;
 
@@ -191,6 +198,25 @@ export const updateReview = () => {
   });
 }
 
+/* favorite a restaurant */
+export const putFavorite = (isfavorite = true) => {
+  console.log('put favorite');
+  // if goes offline store to localStorage
+  
+  const id = getParameterByName('id');
+  const favorite = document.getElementById('restaurant-favorite');
+  if (isfavorite) {
+    favorite.innerHTML = '&#10084;';
+  } else {
+    favorite.innerHTML = '&#10085;';
+  }
+  
+  // store the data
+  DBHelper.favoriteRestaurant(id, (error) => {
+    console.log(id);
+    console.log(error);
+  });
+}
 export const displayOfflineMsg = (message, review) => {
   let modal = document.getElementById('notification');
 

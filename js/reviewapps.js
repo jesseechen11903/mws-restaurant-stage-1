@@ -1,10 +1,11 @@
-import { fetchRestaurantFromURL, fillBreadcrumb, retrieveReviewById, updateReview, updateReviewModal, displayOfflineMsg } from './restaurant_info.js';
+import { fetchRestaurantFromURL, fillBreadcrumb, retrieveReviewById, updateReview, updateReviewModal, displayOfflineMsg, putFavorite } from './restaurant_info.js';
 import DBHelper from './dbhelper.js';
 
 window.retrieveReviewById = retrieveReviewById;
 window.updateReview = updateReview;
 window.updateReviewModal = updateReviewModal;
 window.displayOfflineMsg = displayOfflineMsg;
+window.putFavorite = putFavorite;
 
 /**
  * Initialize Google map, called from HTML.

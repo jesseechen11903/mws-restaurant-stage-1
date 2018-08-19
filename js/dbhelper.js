@@ -239,6 +239,31 @@ export default class DBHelper {
     })
   }
 
+  /* put the review data */
+  static favoriteRestaurant(id, callback) {
+    let restaurant_url = `${DBHelper.DATABASE_URL}/restaurants/${id}/?is_favorite=true`;
+    return fetch(restaurant_url, {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json; charset=utf-8'
+      },
+      method: 'put',
+      redirect: 'follow',
+      referrer: 'no-referrer',
+      mode: 'no-cors',
+      cache: 'no-cache',
+      // body: JSON.stringify({'is_favorite'})
+    }).then(response => {
+      console.log('put ' + response);
+      return response.json();
+    }).then(response => {
+      console.log('data saved');
+    }).catch(response => {
+      let msg = 'Currently offline data will be save later';
+      callback(null, id);
+    })
+  }
+
   /**
    * Fetch restaurants by a cuisine type with proper error handling.
    */
