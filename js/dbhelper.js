@@ -240,8 +240,10 @@ export default class DBHelper {
   }
 
   /* put the review data */
-  static favoriteRestaurant(id, callback) {
-    let restaurant_url = `${DBHelper.DATABASE_URL}/restaurants/${id}/?is_favorite=true`;
+  static favoriteRestaurant(id, isfavorite = true, callback) {
+    let param = isfavorite ? true : false;
+    let restaurant_url = `${DBHelper.DATABASE_URL}/restaurants/${id}/?is_favorite=${param}`;
+    // update the local data
     return fetch(restaurant_url, {
       headers: {
         'Accept': 'application/json',
@@ -250,7 +252,7 @@ export default class DBHelper {
       method: 'put',
       redirect: 'follow',
       referrer: 'no-referrer',
-      mode: 'no-cors',
+      mode: 'cors',
       cache: 'no-cache',
       // body: JSON.stringify({'is_favorite'})
     }).then(response => {

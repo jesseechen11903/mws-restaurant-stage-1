@@ -212,7 +212,7 @@ export const putFavorite = (isfavorite = true) => {
   }
   
   // store the data
-  DBHelper.favoriteRestaurant(id, (error) => {
+  DBHelper.favoriteRestaurant(id, isfavorite, (error) => {
     console.log(id);
     console.log(error);
   });
