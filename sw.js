@@ -165,12 +165,22 @@ self.addEventListener('fetch', event => {
     let testUrl = 'googleapis.com';
 
     if (url.href.indexOf(testUrl) != -1) {
-        event.respondWith(serveImage(event.request, mapCache));
+        event.respondWith(
+            fetch(url, { mode:'no-cors', cache: 'no-store' }
+            ).catch(() => {
+                return serveImage(event.request, mapCache);
+            })
+        );
         return;
     }
     let staticUrl = 'gstatic.com';
     if (url.href.indexOf(staticUrl) != -1) {
-        event.respondWith(serveImage(event.request, staticMapCache));
+        event.respondWith(
+            fetch(url, { mode:'no-cors', cache: 'no-store' }
+            ).catch(() => {
+                return serveImage(event.request, staticMapCache);
+            })
+        );
         return;
     }
 
