@@ -17,10 +17,10 @@
             console.log('Registration succeeded. Scope is ' + reg.scope);
             return navigator.serviceWorker.ready;
           })
-          .then(function(registration) {
-              registration.sync.register('review-Sync').then(() => {
-                console.log('Sync registered');
-              });
+          .then(function (registration) {
+            registration.sync.register('review-Sync').then(() => {
+              console.log('Sync registered');
+            });
           }).catch(function (error) {
             // registration failed
             console.log('Registration failed with ' + error);
@@ -29,7 +29,7 @@
       navigator.serviceWorker.addEventListener('message', () => {
         alert(event.data.alert);
       });
-      
+
     }
   </script>
 
@@ -113,6 +113,23 @@
       padding: 0 10px;
       width: 200px;
     }
+
+    /* latin */
+    @font-face {
+      font-family: 'Roboto';
+      font-style: normal;
+      font-weight: 500;
+      src: local('Roboto Medium'), local('Roboto-Medium'), url(roboto/v18/KFOlCnqEu92Fr1MmEU9fBBc4AMP6lQ.woff2) format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+        /* latin */
+    @font-face {
+      font-family: 'Roboto';
+      font-style: normal;
+      font-weight: 400;
+      src: local('Roboto'), local('Roboto-Regular'), url(roboto/v18/KFOmCnqEu92Fr1Mu4mxKKTU1Kg.woff2) format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
   </style>
   <title>Restaurant Reviews</title>
 </head>
@@ -169,94 +186,94 @@
   <script>
     // progressive-image.js, v1.2
     // by Craig Buckler, @craigbuckler
-    if (window.addEventListener && window.requestAnimationFrame && document.getElementsByClassName) window.addEventListener('load', function() {
+    if (window.addEventListener && window.requestAnimationFrame && document.getElementsByClassName) window.addEventListener('load', function () {
 
-// start
-var pItem = document.getElementsByClassName('progressive replace'), pCount, timer;
+      // start
+      var pItem = document.getElementsByClassName('progressive replace'), pCount, timer;
 
-// scroll and resize events
-window.addEventListener('scroll', scroller, false);
-window.addEventListener('resize', scroller, false);
+      // scroll and resize events
+      window.addEventListener('scroll', scroller, false);
+      window.addEventListener('resize', scroller, false);
 
-// DOM mutation observer
-if (MutationObserver) {
-  var observer = new MutationObserver(function() {
-    if (pItem.length !== pCount) inView();
-  });
-  observer.observe(document.body, { subtree: true, childList: true, attributes: true, characterData: true });
-}
-// initial check
-inView();
-// throttled scroll/resize
-function scroller() {
-  timer = timer || setTimeout(function() {
-    timer = null;
-    inView();
-  }, 300);
-}
-
-// image in view?
-function inView() {
-  if (pItem.length) requestAnimationFrame(function() {
-
-    var wT = window.pageYOffset, wB = wT + window.innerHeight, cRect, pT, pB, p = 0;
-    while (p < pItem.length) {
-      cRect = pItem[p].getBoundingClientRect();
-      pT = wT + cRect.top;
-      pB = pT + cRect.height;
-
-      if (wT < pB && wB > pT) {
-        loadFullImage(pItem[p]);
-        pItem[p].classList.remove('replace');
+      // DOM mutation observer
+      if (MutationObserver) {
+        var observer = new MutationObserver(function () {
+          if (pItem.length !== pCount) inView();
+        });
+        observer.observe(document.body, { subtree: true, childList: true, attributes: true, characterData: true });
       }
-      else p++;
-    }
-    pCount = pItem.length;
-  });
-}
-// replace with full image
-function loadFullImage(item) {
-  var href = item && (item.getAttribute('data-href') || item.href);
-  if (!href) return;
-  // load image
-  var img = new Image();
-  if (item.dataset) {
-    img.srcset = item.dataset.srcset || '';
-    img.sizes = item.dataset.sizes || '';
-  }
-  img.src = href;
-  img.className = 'reveal';
-  if (img.complete) addImg();
-  else img.onload = addImg;
+      // initial check
+      inView();
+      // throttled scroll/resize
+      function scroller() {
+        timer = timer || setTimeout(function () {
+          timer = null;
+          inView();
+        }, 300);
+      }
 
-  // replace image
-  function addImg() {
-    requestAnimationFrame(function() {
+      // image in view?
+      function inView() {
+        if (pItem.length) requestAnimationFrame(function () {
 
-    // disable click
-    if (href === item.href) {
-      item.style.cursor = 'default';
-      item.addEventListener('click', function(e) { e.preventDefault(); }, false);
-    }
+          var wT = window.pageYOffset, wB = wT + window.innerHeight, cRect, pT, pB, p = 0;
+          while (p < pItem.length) {
+            cRect = pItem[p].getBoundingClientRect();
+            pT = wT + cRect.top;
+            pB = pT + cRect.height;
 
-    // preview image
-    var pImg = item.querySelector && item.querySelector('img.preview');
+            if (wT < pB && wB > pT) {
+              loadFullImage(pItem[p]);
+              pItem[p].classList.remove('replace');
+            }
+            else p++;
+          }
+          pCount = pItem.length;
+        });
+      }
+      // replace with full image
+      function loadFullImage(item) {
+        var href = item && (item.getAttribute('data-href') || item.href);
+        if (!href) return;
+        // load image
+        var img = new Image();
+        if (item.dataset) {
+          img.srcset = item.dataset.srcset || '';
+          img.sizes = item.dataset.sizes || '';
+        }
+        img.src = href;
+        img.className = 'reveal';
+        if (img.complete) addImg();
+        else img.onload = addImg;
 
-    // add full image
-    item.insertBefore(img, pImg && pImg.nextSibling).addEventListener('animationend', function() {
+        // replace image
+        function addImg() {
+          requestAnimationFrame(function () {
 
-    // remove preview image
-    if (pImg) {
-      img.alt = pImg.alt || '';
-      item.removeChild(pImg);
-    }
+            // disable click
+            if (href === item.href) {
+              item.style.cursor = 'default';
+              item.addEventListener('click', function (e) { e.preventDefault(); }, false);
+            }
 
-    img.classList.remove('reveal');
-  });
-});
-}
-}
-}, false);
+            // preview image
+            var pImg = item.querySelector && item.querySelector('img.preview');
+
+            // add full image
+            item.insertBefore(img, pImg && pImg.nextSibling).addEventListener('animationend', function () {
+
+              // remove preview image
+              if (pImg) {
+                img.alt = pImg.alt || '';
+                item.removeChild(pImg);
+              }
+
+              img.classList.remove('reveal');
+            });
+          });
+        }
+      }
+    }, false);
 
   </script>
   <footer id="footer">
