@@ -205,9 +205,13 @@ export const putFavorite = (isfavorite = true) => {
   let restaurant = self.restaurant;
   const id = getParameterByName('id');
   const favorite = document.getElementById('restaurant-favorite');
+  const favoriteClick = document.getElementById('restaurant-favorite');
+  favoriteClick.setAttribute('onclick', `putFavorite(${!isfavorite});`);
+     
   if (isfavorite) {
     favorite.innerHTML = '&#10084;';
     restaurant.is_favorite = false;
+    
   } else {
     favorite.innerHTML = '&#10085;';
     restaurant.is_favorite = true;
