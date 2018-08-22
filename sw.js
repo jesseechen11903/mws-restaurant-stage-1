@@ -243,9 +243,3 @@ self.addEventListener('message', function (event) {
         self.skipWaiting();
     }
 });
-
-self.addEventListener('sync', function(event) {
-    if (event.tag === 'reviewSync') {
-        event.awaitUntil(replayReviewSaved());
-    }
-})
